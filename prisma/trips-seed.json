@@ -1,0 +1,650 @@
+[
+  {
+    "id": "trip-1",
+    "name": "Tyrol",
+    "description": "",
+    "startDate": "2023-08-25",
+    "endDate": "2023-08-31",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Vienna",
+        "country": "Austria",
+        "latitude": 48.2082,
+        "longitude": 16.3738,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Innsbruck",
+        "country": "Austria",
+        "latitude": 47.2699,
+        "longitude": 11.3896,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Obern",
+        "country": "Austria",
+        "latitude": 47.0167,
+        "longitude": 11.4167,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Vienna",
+        "country": "Austria",
+        "latitude": 48.2082,
+        "longitude": 16.3738,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": ["Hamed"],
+    "expenses": {
+      "hotel": 400,
+      "food": 200,
+      "transportation": 600,
+      "entryFees": 0,
+      "other": 0
+    }
+  },
+  {
+    "id": "trip-2",
+    "name": "Barcelona",
+    "description": "Honeymoon trip",
+    "startDate": "2023-12-04",
+    "endDate": "2023-12-07",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Barcelona",
+        "country": "Spain",
+        "latitude": 41.3851,
+        "longitude": 2.1734,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 420.4,
+      "food": 275.45,
+      "transportation": 361.78,
+      "entryFees": 71,
+      "other": 41.4
+    }
+  },
+  {
+    "id": "trip-3",
+    "name": "Prague",
+    "description": "",
+    "startDate": "2023-12-22",
+    "endDate": "2023-12-25",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Prague",
+        "country": "Czech Republic",
+        "latitude": 50.0755,
+        "longitude": 14.4378,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": ["Hasan"],
+    "expenses": {
+      "hotel": 259.82,
+      "food": 287.17,
+      "transportation": 259.2,
+      "entryFees": 0,
+      "other": 0
+    }
+  },
+  {
+    "id": "trip-4",
+    "name": "South Europe",
+    "description": "South Europe trip with Porosha",
+    "startDate": "2024-01-05",
+    "endDate": "2024-01-11",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Venice",
+        "country": "Italy",
+        "latitude": 45.4408,
+        "longitude": 12.3155,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Rome",
+        "country": "Italy",
+        "latitude": 41.9028,
+        "longitude": 12.4964,
+        "transportationType": "train"
+      },
+      {
+        "city": "Lisbon",
+        "country": "Portugal",
+        "latitude": 38.7223,
+        "longitude": -9.1393,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": ["Porosha"],
+    "expenses": {
+      "hotel": 253.49,
+      "food": 286.57,
+      "transportation": 351.88,
+      "entryFees": 0,
+      "other": 19.2
+    }
+  },
+  {
+    "id": "trip-5",
+    "name": "Budapest",
+    "description": "",
+    "startDate": "2024-05-18",
+    "endDate": "2024-05-22",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Budapest",
+        "country": "Hungary",
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": ["Siavash", "Sadaf", "Hamed"],
+    "expenses": {
+      "hotel": 179.2,
+      "food": 363,
+      "transportation": 188.42,
+      "entryFees": 54,
+      "other": 82
+    }
+  },
+  {
+    "id": "trip-6",
+    "name": "Krakow",
+    "description": "",
+    "startDate": "2024-08-08",
+    "endDate": "2024-08-11",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Krakow",
+        "country": "Poland",
+        "latitude": 50.0647,
+        "longitude": 19.945,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 252.69,
+      "food": 209.49,
+      "transportation": 231.82,
+      "entryFees": 160,
+      "other": 20
+    }
+  },
+  {
+    "id": "trip-7",
+    "name": "Milan",
+    "description": "",
+    "startDate": "2024-12-19",
+    "endDate": "2024-12-24",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Milan",
+        "country": "Italy",
+        "latitude": 45.4642,
+        "longitude": 9.19,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": ["Siavash", "Sadaf"],
+    "expenses": {
+      "hotel": 420.26,
+      "food": 234.66,
+      "transportation": 396.03,
+      "entryFees": 0,
+      "other": 25.48
+    }
+  },
+  {
+    "id": "trip-8",
+    "name": "Poznan",
+    "description": "",
+    "startDate": "2024-12-26",
+    "endDate": "2024-12-29",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Poznan",
+        "country": "Poland",
+        "latitude": 52.4064,
+        "longitude": 16.9252,
+        "transportationType": "train"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "train"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 204.5,
+      "food": 126.52,
+      "transportation": 77.96,
+      "entryFees": 8.55,
+      "other": 34.67
+    }
+  },
+  {
+    "id": "trip-9",
+    "name": "The Netherlands",
+    "description": "",
+    "startDate": "2024-12-31",
+    "endDate": "2025-01-06",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Amsterdam",
+        "country": "Netherlands",
+        "latitude": 52.3676,
+        "longitude": 4.9041,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Amersfoort",
+        "country": "Netherlands",
+        "latitude": 52.1569,
+        "longitude": 5.3878,
+        "transportationType": "train"
+      },
+      {
+        "city": "Rotterdam",
+        "country": "Netherlands",
+        "latitude": 51.9225,
+        "longitude": 4.4675,
+        "transportationType": "car"
+      },
+      {
+        "city": "Amersfoort",
+        "country": "Netherlands",
+        "latitude": 52.1569,
+        "longitude": 5.3878,
+        "transportationType": "car"
+      },
+      {
+        "city": "Rotterdam",
+        "country": "Netherlands",
+        "latitude": 51.9225,
+        "longitude": 4.4675,
+        "transportationType": "train"
+      },
+      {
+        "city": "Den Haag",
+        "country": "Netherlands",
+        "latitude": 52.0705,
+        "longitude": 4.3007,
+        "transportationType": "train"
+      },
+      {
+        "city": "Rotterdam",
+        "country": "Netherlands",
+        "latitude": 51.9225,
+        "longitude": 4.4675,
+        "transportationType": "train"
+      },
+      {
+        "city": "Hoorn",
+        "country": "Netherlands",
+        "latitude": 52.6426,
+        "longitude": 5.0597,
+        "transportationType": "train"
+      },
+      {
+        "city": "Amsterdam",
+        "country": "Netherlands",
+        "latitude": 52.3676,
+        "longitude": 4.9041,
+        "transportationType": "train"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 0,
+      "food": 214.64,
+      "transportation": 617.18,
+      "entryFees": 54,
+      "other": 30.24
+    }
+  },
+  {
+    "id": "trip-10",
+    "name": "Rostock",
+    "description": "",
+    "startDate": "2025-07-04",
+    "endDate": "2025-07-05",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Rostock",
+        "country": "Germany",
+        "latitude": 54.0924,
+        "longitude": 12.0991,
+        "transportationType": "train"
+      },
+      {
+        "city": "Warnemünde",
+        "country": "Germany",
+        "latitude": 54.1817,
+        "longitude": 12.0842,
+        "transportationType": "train"
+      },
+      {
+        "city": "Rostock",
+        "country": "Germany",
+        "latitude": 54.0924,
+        "longitude": 12.0991,
+        "transportationType": "train"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "train"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 313.5,
+      "food": 171.31,
+      "transportation": 159.96,
+      "entryFees": 46,
+      "other": 5
+    }
+  },
+  {
+    "id": "trip-11",
+    "name": "Malaga",
+    "description": "",
+    "startDate": "2025-08-29",
+    "endDate": "2025-09-03",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Malaga",
+        "country": "Spain",
+        "latitude": 36.7213,
+        "longitude": -4.4214,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Sevilla",
+        "country": "Spain",
+        "latitude": 37.3891,
+        "longitude": -5.9845,
+        "transportationType": "train"
+      },
+      {
+        "city": "Malaga",
+        "country": "Spain",
+        "latitude": 36.7213,
+        "longitude": -4.4214,
+        "transportationType": "train"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 442.37,
+      "food": 346.71,
+      "transportation": 662.19,
+      "entryFees": 113,
+      "other": 6
+    }
+  },
+  {
+    "id": "trip-12",
+    "name": "Vienna",
+    "description": "",
+    "startDate": "2025-09-28",
+    "endDate": "2025-10-02",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Vienna",
+        "country": "Austria",
+        "latitude": 48.2082,
+        "longitude": 16.3738,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Bratislava",
+        "country": "Slovakia",
+        "latitude": 48.1486,
+        "longitude": 17.1077,
+        "transportationType": "bus"
+      },
+      {
+        "city": "Vienna",
+        "country": "Austria",
+        "latitude": 48.2082,
+        "longitude": 16.3738,
+        "transportationType": "bus"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 299.2,
+      "food": 162.15,
+      "transportation": 464.79,
+      "entryFees": 44,
+      "other": 9.9
+    }
+  },
+  {
+    "id": "trip-13",
+    "name": "Canary Island Cruise",
+    "description": "",
+    "startDate": "2025-12-13",
+    "endDate": "2025-12-22",
+    "destinations": [
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": null
+      },
+      {
+        "city": "Marseille",
+        "country": "France",
+        "latitude": 43.2965,
+        "longitude": 5.3698,
+        "transportationType": "plane"
+      },
+      {
+        "city": "Barcelona",
+        "country": "Spain",
+        "latitude": 41.3851,
+        "longitude": 2.1734,
+        "transportationType": "boat"
+      },
+      {
+        "city": "Cadiz",
+        "country": "Spain",
+        "latitude": 36.5271,
+        "longitude": -6.2886,
+        "transportationType": "boat"
+      },
+      {
+        "city": "Las Palmas de Gran Canaria",
+        "country": "Spain",
+        "latitude": 28.1235,
+        "longitude": -15.4363,
+        "transportationType": "boat"
+      },
+      {
+        "city": "Berlin",
+        "country": "Germany",
+        "latitude": 52.52,
+        "longitude": 13.405,
+        "transportationType": "plane"
+      }
+    ],
+    "companions": [],
+    "expenses": {
+      "hotel": 850,
+      "food": 622.74,
+      "transportation": 839.61,
+      "entryFees": 20,
+      "other": 52.45
+    }
+  }
+]

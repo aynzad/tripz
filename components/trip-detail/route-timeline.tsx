@@ -1,0 +1,87 @@
+"use client"
+
+import type { Destination } from "@/lib/types"
+import { TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types"
+import { motion } from "framer-motion"
+import { MapPin } from "lucide-react"
+
+interface RouteTimelineProps {
+  destinations: Destination[]
+}
+
+export default function RouteTimeline({ destinations }: RouteTimelineProps) {
+  return (
+    <div className="space-y-0">
+      {destinations.map((dest, index) => {
+        const isFirst = index === 0
+        const isLast = index === destinations.length - 1
+        const nextDest = destinations[index + 1]
+
+        return (
+          <motion.div
+            key={`${dest.id}-${index}`}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="relative"
+          >
+            {/* Connector Line */}
+            {!isLast && (
+              <div
+                className="absolute left-[19px] top-12 w-0.5 h-full -translate-x-1/2"
+                style={{
+                  backgroundColor: nextDest?.transportationType
+                    ? TRANSPORTATION_COLORS[nextDest.transportationType] || TRANSPORTATION_COLORS.default
+                    : TRANSPORTATION_COLORS.default,
+                }}
+              />
+            )}
+
+            {/* Destination Card */}
+            <div className="flex gap-4 pb-6">
+              {/* Icon */}
+              <div
+                className={`
+                  relative z-10 flex-shrink-0 w-10 h-10 rounded-full
+                  flex items-center justify-center
+                  ${isFirst || isLast ? "bg-accent" : "bg-primary"}
+                  text-primary-foreground
+                `}
+              >
+                {isFirst ? (
+                  <span className="text-xs font-bold">1</span>
+                ) : isLast ? (
+                  <MapPin className="w-4 h-4" />
+                ) : (
+                  <span className="text-xs font-bold">{index + 1}</span>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 bg-card rounded-xl p-4 border border-border">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-semibold text-foreground">{dest.city}</h3>
+                    <p className="text-sm text-muted-foreground">{dest.country}</p>
+                  </div>
+                  {dest.transportationType && (
+                    <div
+                      className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1"
+                      style={{
+                        backgroundColor:
+                          TRANSPORTATION_COLORS[dest.transportationType] || TRANSPORTATION_COLORS.default,
+                        color: "#fff",
+                      }}
+                    >
+                      {TRANSPORTATION_ICONS[dest.transportationType]} {dest.transportationType}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
