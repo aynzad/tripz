@@ -1,7 +1,7 @@
 'use client'
 
 import type { Expenses } from '@/lib/types'
-import { calculateTotalExpenses } from '@/lib/trips'
+import { calculateTotalExpenses } from '@/lib/trips-utils'
 import { formatCurrency } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { Home, Utensils, Ticket, Package, Plane } from 'lucide-react'

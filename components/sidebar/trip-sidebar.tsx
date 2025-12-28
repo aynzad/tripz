@@ -1,7 +1,7 @@
 'use client'
 
 import type { Trip } from '@/lib/types'
-import { calculateTotalExpenses, calculateExpensesPerNight } from '@/lib/trips'
+import { calculateTotalExpenses, calculateExpensesPerNight } from '@/lib/trips-utils'
 import { calculateStatistics } from '@/lib/statistics'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, MapPin, Users, BarChart3, TrendingUp } from 'lucide-react'

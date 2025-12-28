@@ -23,7 +23,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { calculateTotalExpenses, getUniqueCompanions } from '@/lib/trips'
+import { calculateTotalExpenses, getUniqueCompanions } from '@/lib/trips-utils'
 import { getCityImagePath, formatDate, getDestinationsExcludingHome, formatCurrency } from '@/lib/utils'
 import TripForm from './trip-form'
 import ImportModal from './import-modal'

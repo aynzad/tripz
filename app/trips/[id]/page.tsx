@@ -26,11 +26,6 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 }
 
-export async function generateStaticParams() {
-  const trips = await getAllTrips()
-  return trips.map((trip) => ({ id: trip.id }))
-}
-
 export default async function TripDetailPage({ params }: { params: Params }) {
   const { id } = await params
   const trip = await getTripById(id)

@@ -1,67 +1,202 @@
-import { tripStore } from './db'
+'server-only'
+
+import { prisma } from './db'
 import type { Trip, Expenses, TripInput } from './types'
 import { normalizeCityNameForUrl } from './utils'
 
+// Helper function to transform Prisma trip to Trip type
+function transformPrismaTrip(prismaTrip: {
+  id: string
+  name: string
+  description: string
+  startDate: Date
+  endDate: Date
+  companions: string
+  expenses: string
+  destinations: {
+    id: string
+    city: string
+    country: string
+    latitude: number
+    longitude: number
+    transportationType: string | null
+    order: number
+  }[]
+}): Trip {
+  return {
+    id: prismaTrip.id,
+    name: prismaTrip.name,
+    description: prismaTrip.description,
+    startDate: prismaTrip.startDate,
+    endDate: prismaTrip.endDate,
+    companions: JSON.parse(prismaTrip.companions || '[]') as string[],
+    expenses: JSON.parse(prismaTrip.expenses || '{}') as Expenses,
+    destinations: prismaTrip.destinations.map((d) => ({
+      id: d.id,
+      city: d.city,
+      country: d.country,
+      latitude: d.latitude,
+      longitude: d.longitude,
+      transportationType: d.transportationType as Trip['destinations'][0]['transportationType'],
+      order: d.order,
+    })),
+  }
+}
+
 export async function getAllTrips(): Promise<Trip[]> {
-  return tripStore.getAll()
+  const trips = await prisma.trip.findMany({
+    include: {
+      destinations: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      startDate: 'desc',
+    },
+  })
+  return trips.map(transformPrismaTrip)
 }
 
 export async function getTripById(id: string): Promise<Trip | null> {
-  return tripStore.getById(id)
+  const trip = await prisma.trip.findUnique({
+    where: { id },
+    include: {
+      destinations: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+  })
+  return trip ? transformPrismaTrip(trip) : null
 }
 
 export async function createTrip(input: TripInput): Promise<Trip> {
-  return tripStore.create(input)
+  const tripId = input.id || `trip-${Date.now()}`
+  const trip = await prisma.trip.create({
+    data: {
+      id: tripId,
+      name: input.name,
+      description: input.description,
+      startDate: new Date(input.startDate),
+      endDate: new Date(input.endDate),
+      companions: JSON.stringify(input.companions),
+      expenses: JSON.stringify(input.expenses),
+      destinations: {
+        create: input.destinations.map((d, i) => ({
+          city: d.city,
+          country: d.country,
+          latitude: d.latitude,
+          longitude: d.longitude,
+          transportationType: d.transportationType,
+          order: i,
+        })),
+      },
+    },
+    include: {
+      destinations: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+  })
+  return transformPrismaTrip(trip)
 }
 
 export async function updateTrip(id: string, input: TripInput): Promise<Trip> {
-  const trip = tripStore.update(id, input)
-  if (!trip) throw new Error('Trip not found')
-  return trip
+  // First, delete existing destinations
+  await prisma.destination.deleteMany({
+    where: { tripId: id },
+  })
+
+  // Then update the trip and create new destinations
+  const trip = await prisma.trip.update({
+    where: { id },
+    data: {
+      name: input.name,
+      description: input.description,
+      startDate: new Date(input.startDate),
+      endDate: new Date(input.endDate),
+      companions: JSON.stringify(input.companions),
+      expenses: JSON.stringify(input.expenses),
+      destinations: {
+        create: input.destinations.map((d, i) => ({
+          city: d.city,
+          country: d.country,
+          latitude: d.latitude,
+          longitude: d.longitude,
+          transportationType: d.transportationType,
+          order: i,
+        })),
+      },
+    },
+    include: {
+      destinations: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+  })
+  return transformPrismaTrip(trip)
 }
 
 export async function deleteTrip(id: string): Promise<void> {
-  tripStore.delete(id)
+  // Destinations will be deleted automatically due to onDelete: Cascade
+  await prisma.trip.delete({
+    where: { id },
+  })
 }
 
 export async function importTrips(trips: TripInput[]): Promise<number> {
   let count = 0
   for (const tripInput of trips) {
-    const existing = tripInput.id ? tripStore.getById(tripInput.id) : null
+    const tripId = tripInput.id || `trip-${Date.now()}-${count}`
+    const existing = tripInput.id ? await prisma.trip.findUnique({ where: { id: tripInput.id } }) : null
+
     if (existing) {
-      tripStore.update(tripInput.id!, tripInput)
+      await updateTrip(tripInput.id!, tripInput)
     } else {
-      tripStore.create(tripInput)
+      await createTrip({ ...tripInput, id: tripId })
     }
     count++
   }
   return count
 }
 
-export function calculateTotalExpenses(expenses: Expenses): number {
-  return expenses.hotel + expenses.food + expenses.transportation + expenses.entryFees + expenses.other
-}
-
-export function calculateExpensesPerNight(expenses: Expenses, startDate: Date, endDate: Date): number {
-  const nights = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)))
-  return calculateTotalExpenses(expenses) / nights
-}
-
-export function getUniqueCompanions(trips: Trip[]): string[] {
-  const companions = new Set<string>()
-  trips.forEach((trip) => trip.companions.forEach((c) => companions.add(c)))
-  return Array.from(companions).sort()
-}
-
-export function getUniqueCountries(trips: Trip[]): string[] {
-  const countries = new Set<string>()
-  trips.forEach((trip) => trip.destinations.forEach((d) => countries.add(d.country)))
-  return Array.from(countries).sort()
-}
+// Utility functions moved to lib/trips-utils.ts for client component compatibility
+// Re-export them here for backward compatibility with server components
+export {
+  calculateTotalExpenses,
+  calculateExpensesPerNight,
+  getUniqueCompanions,
+  getUniqueCountries,
+} from './trips-utils'
 
 export async function getTripsByCity(cityName: string): Promise<Trip[]> {
-  const allTrips = await getAllTrips()
-  return allTrips.filter((trip) => trip.destinations.some((dest) => dest.city === cityName))
+  const trips = await prisma.trip.findMany({
+    where: {
+      destinations: {
+        some: {
+          city: cityName,
+        },
+      },
+    },
+    include: {
+      destinations: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      startDate: 'desc',
+    },
+  })
+  return trips.map(transformPrismaTrip)
 }
 
 /**

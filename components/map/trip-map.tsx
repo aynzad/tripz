@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { type Trip, TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from '@/lib/types'
-import { calculateTotalExpenses } from '@/lib/trips'
+import { calculateTotalExpenses } from '@/lib/trips-utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, MapPin, Calendar, Users, DollarSign, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'

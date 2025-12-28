@@ -3,7 +3,12 @@
 import { useState, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import type { Trip } from '@/lib/types'
-import { calculateTotalExpenses, calculateExpensesPerNight, getUniqueCompanions, getUniqueCountries } from '@/lib/trips'
+import {
+  calculateTotalExpenses,
+  calculateExpensesPerNight,
+  getUniqueCompanions,
+  getUniqueCountries,
+} from '@/lib/trips-utils'
 import TripSidebar from '@/components/sidebar/trip-sidebar'
 import FilterBar, { type FilterState } from '@/components/filters/filter-bar'
 

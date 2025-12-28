@@ -6,7 +6,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line } from 'recharts'
 import type { Trip } from '@/lib/types'
 import type { TripStatistics } from '@/lib/statistics'
-import { calculateTotalExpenses, calculateExpensesPerNight } from '@/lib/trips'
+import { calculateTotalExpenses, calculateExpensesPerNight } from '@/lib/trips-utils'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { TrendingUp, TrendingDown, Calendar, Users, MapPin, Globe, Euro, ArrowLeft, Moon } from 'lucide-react'
 import Link from 'next/link'

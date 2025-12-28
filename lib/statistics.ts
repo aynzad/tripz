@@ -1,5 +1,5 @@
 import type { Trip } from './types'
-import { calculateTotalExpenses, calculateExpensesPerNight } from './trips'
+import { calculateTotalExpenses, calculateExpensesPerNight } from './trips-utils'
 import { getDestinationsExcludingHome } from './utils'
 
 export interface TripStatistics {
