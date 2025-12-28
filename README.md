@@ -49,7 +49,7 @@ docker-compose build
 docker-compose up
 ```
 
-The app will be available at `http://localhost:3000`.
+The app will be available at `http://localhost/` (or `http://trips.local/` if deployed on a Raspberry Pi with mDNS configured).
 
 ### 3. Manage the container
 
@@ -65,6 +65,80 @@ docker-compose restart
 ```
 
 > **Note:** The SQLite database is persisted in a Docker volume (`tripz-data`). Your data will survive container restarts and rebuilds. See the [Data Persistence](#data-persistence) section below for details.
+
+---
+
+## Deploying on Raspberry Pi (Local Network Access)
+
+Access your app at `http://trips.local/` from any device on your local network.
+
+### Prerequisites
+
+- Raspberry Pi (3, 4, or 5) with Raspberry Pi OS
+- Docker and Docker Compose installed
+- Devices on the same local network
+
+### Step 1: Set Up Hostname
+
+SSH into your Raspberry Pi:
+
+```bash
+# Set hostname to "trips"
+sudo hostnamectl set-hostname trips
+
+# Install mDNS daemon (enables .local resolution)
+sudo apt-get update
+sudo apt-get install -y avahi-daemon
+
+# Restart to apply
+sudo systemctl restart avahi-daemon
+```
+
+### Step 2: Configure Environment
+
+```bash
+cp sample.env .env
+```
+
+Edit `.env`:
+
+```bash
+NEXTAUTH_URL="http://trips.local"
+NEXTAUTH_SECRET="<generate-with-openssl-rand-base64-32>"
+GOOGLE_CLIENT_ID="<your-google-client-id>"
+GOOGLE_CLIENT_SECRET="<your-google-client-secret>"
+```
+
+### Step 3: Update Google OAuth
+
+In the [Google Cloud Console](https://console.developers.google.com), add to your OAuth credentials:
+
+- **Authorized JavaScript origins**: `http://trips.local`
+- **Authorized redirect URIs**: `http://trips.local/api/auth/callback/google`
+
+### Step 4: Build and Run
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+### Step 5: Access the App
+
+From any device on your network:
+
+```
+http://trips.local/
+```
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Can't resolve `trips.local` | Ensure avahi-daemon is running: `sudo systemctl status avahi-daemon` |
+| Windows can't find `.local` | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) |
+| Connection refused | Check container is running: `docker compose ps` |
+| Auth errors | Clear browser cookies and verify `NEXTAUTH_URL` matches the URL exactly |
 
 ---
 
@@ -188,7 +262,7 @@ Supported values: `plane`, `train`, `car`, `bus`, `boat`, or `null` for the star
 
 ### Customizing the Port
 
-To run on a different port, edit `docker-compose.yml`:
+The default configuration serves on port 80. To use a different port, edit `docker-compose.yml`:
 
 ```yaml
 ports:
