@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Trip } from "@/lib/types";
 import { logoutAction } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import pluralize from "pluralize";
 import {
   MapPin,
   Plus,
@@ -155,7 +156,8 @@ export default function AdminDashboard({
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Trips</h1>
             <p className="text-muted-foreground">
-              {trips.length} trips in your collection
+              {trips.length} {pluralize("trip", trips.length)} in your
+              collection
             </p>
           </div>
 
@@ -225,7 +227,10 @@ export default function AdminDashboard({
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
-                        <span>{trip.destinations.length - 2} stops</span>
+                        <span>
+                          {trip.destinations.length - 2}{" "}
+                          {pluralize("stop", trip.destinations.length - 2)}
+                        </span>
                       </div>
                     </div>
                   </div>

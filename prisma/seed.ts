@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { loadEnvConfig } from "@next/env";
+import pluralize from "pluralize";
 
 const projectDir = process.cwd();
 loadEnvConfig(projectDir);
@@ -73,7 +74,12 @@ async function main() {
     console.log(`Created trip: ${trip.name} (${trip.id})`);
   }
 
-  console.log(`\n✅ Successfully seeded ${tripsData.length} trips!`);
+  console.log(
+    `\n✅ Successfully seeded ${tripsData.length} ${pluralize(
+      "trip",
+      tripsData.length
+    )}!`
+  );
 }
 
 main()

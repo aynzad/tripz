@@ -7,6 +7,7 @@ import type { Trip, TripInput } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { X, Upload, FileJson, AlertCircle, CheckCircle, Loader2 } from "lucide-react"
 import { importTrips } from "@/app/admin/actions"
+import pluralize from "pluralize"
 
 interface ImportModalProps {
   onClose: () => void
@@ -122,7 +123,7 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
                 <CheckCircle className="w-12 h-12 text-green-500" />
                 <div>
                   <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-muted-foreground">{jsonContent?.length} trips ready to import</p>
+                  <p className="text-sm text-muted-foreground">{jsonContent?.length || 0} {pluralize("trip", jsonContent?.length || 0)} ready to import</p>
                 </div>
               </div>
             ) : error ? (
@@ -174,7 +175,7 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
           </Button>
           <Button onClick={handleImport} disabled={!jsonContent || isImporting}>
             {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
-            Import {jsonContent?.length || 0} Trips
+            Import {jsonContent?.length || 0} {pluralize("Trip", jsonContent?.length || 0)}
           </Button>
         </div>
       </div>

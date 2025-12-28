@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import pluralize from "pluralize";
 import {
   ArrowLeft,
   Calendar,
@@ -72,8 +73,12 @@ export default async function TripDetailPage({ params }: { params: Params }) {
 
   const mainDestinations = trip.destinations.filter((d) => d.city !== "Berlin");
   const mainCity = mainDestinations[0]?.city || trip.destinations[0]?.city;
-  const mainCountry =
-    mainDestinations[0]?.country || trip.destinations[0]?.country;
+
+  // Calculate unique destinations excluding Berlin (first and last cities)
+  const uniqueDestinations = new Set(
+    trip.destinations.filter((d) => d.city !== "Berlin").map((d) => d.city)
+  );
+  const uniqueDestinationCount = uniqueDestinations.size;
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -127,11 +132,16 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               </div>
               <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
                 <Moon className="w-4 h-4 text-primary" />
-                <span>{nights} nights</span>
+                <span>
+                  {nights} {pluralize("night", nights)}
+                </span>
               </div>
               <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>{trip.destinations.length - 2} destinations</span>
+                <span>
+                  {uniqueDestinationCount}{" "}
+                  {pluralize("destination", uniqueDestinationCount)}
+                </span>
               </div>
               {trip.companions.length > 0 && (
                 <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
@@ -169,7 +179,12 @@ export default async function TripDetailPage({ params }: { params: Params }) {
           <div className="bg-card rounded-xl p-6 border border-border">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
               <MapPin className="w-4 h-4" />
-              <span className="text-sm">Countries</span>
+              <span className="text-sm">
+                {pluralize(
+                  "Country",
+                  new Set(trip.destinations.map((d) => d.country)).size
+                )}
+              </span>
             </div>
             <p className="text-3xl font-bold text-foreground">
               {new Set(trip.destinations.map((d) => d.country)).size}
@@ -181,7 +196,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               <span className="text-sm">Duration</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
-              {nights + 1} days
+              {nights + 1} {pluralize("day", nights + 1)}
             </p>
           </div>
         </div>
