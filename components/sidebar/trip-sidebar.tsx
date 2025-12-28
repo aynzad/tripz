@@ -3,8 +3,11 @@
 import type { Trip } from "@/lib/types";
 import { calculateTotalExpenses, calculateExpensesPerNight } from "@/lib/trips";
 import { motion, AnimatePresence } from "framer-motion";
-import { DollarSign, Moon, ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { getCityImagePath } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface TripSidebarProps {
   trips: Trip[];
@@ -17,6 +20,7 @@ export default function TripSidebar({
   selectedTripId,
   onTripSelect,
 }: TripSidebarProps) {
+  const router = useRouter();
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
@@ -63,6 +67,7 @@ export default function TripSidebar({
               >
                 <div
                   onClick={() => onTripSelect(isSelected ? null : trip.id)}
+                  onDoubleClick={() => router.push(`/trips/${trip.id}`)}
                   className={`
                     relative group cursor-pointer rounded-xl overflow-hidden
                     transition-all duration-300 transform
@@ -75,15 +80,15 @@ export default function TripSidebar({
                 >
                   {/* Hero Image */}
                   <div className="relative h-36 overflow-hidden">
-                    <img
-                      src={`/.jpg?key=eaj23&height=144&width=320&query=${encodeURIComponent(
-                        mainCity + " " + mainCountry + " travel photography"
-                      )}`}
+                    <Image
+                      src={getCityImagePath(mainCity)}
                       alt={trip.name}
+                      fill
                       className={`
-                        w-full h-full object-cover transition-transform duration-500
+                        object-cover transition-transform duration-500
                         ${isSelected ? "scale-110" : "group-hover:scale-105"}
                       `}
+                      sizes="320px"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -111,32 +116,31 @@ export default function TripSidebar({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1 text-sm">
-                          <DollarSign className="w-4 h-4 text-accent" />
                           <span className="font-medium">
                             €{totalExpenses.toFixed(0)}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Moon className="w-3 h-3" />
                           <span>€{perNight.toFixed(0)}/night</span>
                         </div>
+                        {trip.companions.length > 0 && (
+                          <div className="flex items-center gap-1 text-sm text-foreground">
+                            <Users className="w-3 h-3" />
+                          </div>
+                        )}
                       </div>
-                    </div>
-
-                    {/* View Details Link */}
-                    <Link
-                      href={`/trips/${trip.id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="
-                        mt-3 flex items-center justify-center gap-2 w-full py-2
-                        bg-secondary/50 hover:bg-secondary rounded-lg
-                        text-sm font-medium text-foreground
+                      <div className="flex-1 flex justify-end">
+                        <Link
+                          href={`/trips/${trip.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-sm font-medium text-foreground
                         transition-colors group/link
                       "
-                    >
-                      View details
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
-                    </Link>
+                        >
+                          <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>

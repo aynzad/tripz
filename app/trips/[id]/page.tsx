@@ -1,48 +1,79 @@
-import { getTripById, getAllTrips, calculateTotalExpenses, calculateExpensesPerNight } from "@/lib/trips"
-import { notFound } from "next/navigation"
-import type { Metadata } from "next"
-import Link from "next/link"
-import { ArrowLeft, Calendar, Users, MapPin, DollarSign, Moon } from "lucide-react"
-import TripDetailMap from "@/components/trip-detail/trip-detail-map"
-import ExpenseBreakdown from "@/components/trip-detail/expense-breakdown"
-import RouteTimeline from "@/components/trip-detail/route-timeline"
+import {
+  getTripById,
+  getAllTrips,
+  calculateTotalExpenses,
+  calculateExpensesPerNight,
+} from "@/lib/trips";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  ArrowLeft,
+  Calendar,
+  Users,
+  MapPin,
+  DollarSign,
+  Moon,
+} from "lucide-react";
+import TripDetailMap from "@/components/trip-detail/trip-detail-map";
+import ExpenseBreakdown from "@/components/trip-detail/expense-breakdown";
+import RouteTimeline from "@/components/trip-detail/route-timeline";
+import { getCityImagePath } from "@/lib/utils";
 
-type Params = Promise<{ id: string }>
+type Params = Promise<{ id: string }>;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { id } = await params
-  const trip = await getTripById(id)
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const trip = await getTripById(id);
 
   if (!trip) {
-    return { title: "Trip Not Found" }
+    return { title: "Trip Not Found" };
   }
 
   return {
     title: `${trip.name} - TripViz`,
-    description: trip.description || `Explore the ${trip.name} trip with interactive maps and expense tracking`,
-  }
+    description:
+      trip.description ||
+      `Explore the ${trip.name} trip with interactive maps and expense tracking`,
+  };
 }
 
 export async function generateStaticParams() {
-  const trips = await getAllTrips()
-  return trips.map((trip) => ({ id: trip.id }))
+  const trips = await getAllTrips();
+  return trips.map((trip) => ({ id: trip.id }));
 }
 
 export default async function TripDetailPage({ params }: { params: Params }) {
-  const { id } = await params
-  const trip = await getTripById(id)
+  const { id } = await params;
+  const trip = await getTripById(id);
 
   if (!trip) {
-    notFound()
+    notFound();
   }
 
-  const totalExpenses = calculateTotalExpenses(trip.expenses)
-  const perNight = calculateExpensesPerNight(trip.expenses, trip.startDate, trip.endDate)
-  const nights = Math.max(1, Math.ceil((trip.endDate.getTime() - trip.startDate.getTime()) / (1000 * 60 * 60 * 24)))
+  const totalExpenses = calculateTotalExpenses(trip.expenses);
+  const perNight = calculateExpensesPerNight(
+    trip.expenses,
+    trip.startDate,
+    trip.endDate
+  );
+  const nights = Math.max(
+    1,
+    Math.ceil(
+      (trip.endDate.getTime() - trip.startDate.getTime()) /
+        (1000 * 60 * 60 * 24)
+    )
+  );
 
-  const mainDestinations = trip.destinations.filter((d) => d.city !== "Berlin")
-  const mainCity = mainDestinations[0]?.city || trip.destinations[0]?.city
-  const mainCountry = mainDestinations[0]?.country || trip.destinations[0]?.country
+  const mainDestinations = trip.destinations.filter((d) => d.city !== "Berlin");
+  const mainCity = mainDestinations[0]?.city || trip.destinations[0]?.city;
+  const mainCountry =
+    mainDestinations[0]?.country || trip.destinations[0]?.country;
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -50,19 +81,22 @@ export default async function TripDetailPage({ params }: { params: Params }) {
       month: "long",
       day: "numeric",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative h-[60vh] min-h-[400px] overflow-hidden">
-        <img
-          src={`/.jpg?height=800&width=1600&query=${mainCity} ${mainCountry} travel landscape photography`}
+        <Image
+          src={getCityImagePath(mainCity)}
           alt={trip.name}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
 
         {/* Back Button */}
         <Link
@@ -75,8 +109,14 @@ export default async function TripDetailPage({ params }: { params: Params }) {
         {/* Hero Content */}
         <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">{trip.name}</h1>
-            {trip.description && <p className="text-xl text-muted-foreground mb-6 max-w-2xl">{trip.description}</p>}
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
+              {trip.name}
+            </h1>
+            {trip.description && (
+              <p className="text-xl text-muted-foreground mb-6 max-w-2xl">
+                {trip.description}
+              </p>
+            )}
 
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
@@ -91,7 +131,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               </div>
               <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>{trip.destinations.length} destinations</span>
+                <span>{trip.destinations.length - 2} destinations</span>
               </div>
               {trip.companions.length > 0 && (
                 <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
@@ -113,14 +153,18 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               <DollarSign className="w-4 h-4" />
               <span className="text-sm">Total Expenses</span>
             </div>
-            <p className="text-3xl font-bold text-accent">€{totalExpenses.toFixed(0)}</p>
+            <p className="text-3xl font-bold text-accent">
+              €{totalExpenses.toFixed(0)}
+            </p>
           </div>
           <div className="bg-card rounded-xl p-6 border border-border">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
               <Moon className="w-4 h-4" />
               <span className="text-sm">Per Night</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">€{perNight.toFixed(0)}</p>
+            <p className="text-3xl font-bold text-foreground">
+              €{perNight.toFixed(0)}
+            </p>
           </div>
           <div className="bg-card rounded-xl p-6 border border-border">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
@@ -136,7 +180,9 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               <Calendar className="w-4 h-4" />
               <span className="text-sm">Duration</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">{nights + 1} days</p>
+            <p className="text-3xl font-bold text-foreground">
+              {nights + 1} days
+            </p>
           </div>
         </div>
 
@@ -174,7 +220,9 @@ export default async function TripDetailPage({ params }: { params: Params }) {
                   className="bg-card rounded-xl px-6 py-4 border border-border flex items-center gap-3"
                 >
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-primary font-semibold">{companion[0]}</span>
+                    <span className="text-primary font-semibold">
+                      {companion[0]}
+                    </span>
                   </div>
                   <span className="font-medium">{companion}</span>
                 </div>
@@ -184,5 +232,5 @@ export default async function TripDetailPage({ params }: { params: Params }) {
         )}
       </div>
     </div>
-  )
+  );
 }

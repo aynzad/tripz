@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import type { Destination } from "@/lib/types"
-import { TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types"
-import { motion } from "framer-motion"
-import { MapPin } from "lucide-react"
+import type { Destination } from "@/lib/types";
+import { TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types";
+import { motion } from "framer-motion";
+import { MapPin } from "lucide-react";
 
 interface RouteTimelineProps {
-  destinations: Destination[]
+  destinations: Destination[];
 }
 
 export default function RouteTimeline({ destinations }: RouteTimelineProps) {
   return (
     <div className="space-y-0">
       {destinations.map((dest, index) => {
-        const isFirst = index === 0
-        const isLast = index === destinations.length - 1
-        const nextDest = destinations[index + 1]
+        const isFirst = index === 0;
+        const isLast = index === destinations.length - 1;
+        const nextDest = destinations[index + 1];
 
         return (
           <motion.div
@@ -28,10 +28,11 @@ export default function RouteTimeline({ destinations }: RouteTimelineProps) {
             {/* Connector Line */}
             {!isLast && (
               <div
-                className="absolute left-[19px] top-12 w-0.5 h-full -translate-x-1/2"
+                className="absolute left-[19px] top-12 w-0.5 h-full -translate-x-1/2 -translate-y-2"
                 style={{
                   backgroundColor: nextDest?.transportationType
-                    ? TRANSPORTATION_COLORS[nextDest.transportationType] || TRANSPORTATION_COLORS.default
+                    ? TRANSPORTATION_COLORS[nextDest.transportationType] ||
+                      TRANSPORTATION_COLORS.default
                     : TRANSPORTATION_COLORS.default,
                 }}
               />
@@ -61,27 +62,33 @@ export default function RouteTimeline({ destinations }: RouteTimelineProps) {
               <div className="flex-1 bg-card rounded-xl p-4 border border-border">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-foreground">{dest.city}</h3>
-                    <p className="text-sm text-muted-foreground">{dest.country}</p>
+                    <h3 className="font-semibold text-foreground">
+                      {dest.city}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {dest.country}
+                    </p>
                   </div>
                   {dest.transportationType && (
                     <div
                       className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1"
                       style={{
                         backgroundColor:
-                          TRANSPORTATION_COLORS[dest.transportationType] || TRANSPORTATION_COLORS.default,
+                          TRANSPORTATION_COLORS[dest.transportationType] ||
+                          TRANSPORTATION_COLORS.default,
                         color: "#fff",
                       }}
                     >
-                      {TRANSPORTATION_ICONS[dest.transportationType]} {dest.transportationType}
+                      {TRANSPORTATION_ICONS[dest.transportationType]}{" "}
+                      {dest.transportationType}
                     </div>
                   )}
                 </div>
               </div>
             </div>
           </motion.div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

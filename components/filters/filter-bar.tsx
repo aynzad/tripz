@@ -1,35 +1,48 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { type Trip, TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types"
-import { motion, AnimatePresence } from "framer-motion"
-import { Filter, Calendar, Car, Users, Globe, DollarSign, RotateCcw, ChevronUp, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
-import { Badge } from "@/components/ui/badge"
+import { useState, useMemo } from "react";
+import {
+  type Trip,
+  TRANSPORTATION_COLORS,
+  TRANSPORTATION_ICONS,
+} from "@/lib/types";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Filter,
+  Calendar,
+  Car,
+  Users,
+  Globe,
+  DollarSign,
+  RotateCcw,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 
 export interface FilterState {
-  dateRange: [number, number]
-  transportationTypes: string[]
-  companions: string[]
-  countries: string[]
-  expenseRange: [number, number]
-  expensePerNightRange: [number, number]
+  dateRange: [number, number];
+  transportationTypes: string[];
+  companions: string[];
+  countries: string[];
+  expenseRange: [number, number];
+  expensePerNightRange: [number, number];
 }
 
 interface FilterBarProps {
-  trips: Trip[]
-  filters: FilterState
-  onFiltersChange: (filters: FilterState) => void
-  allCompanions: string[]
-  allCountries: string[]
-  expenseBounds: [number, number]
-  expensePerNightBounds: [number, number]
-  dateBounds: [number, number]
+  trips: Trip[];
+  filters: FilterState;
+  onFiltersChange: (filters: FilterState) => void;
+  allCompanions: string[];
+  allCountries: string[];
+  expenseBounds: [number, number];
+  expensePerNightBounds: [number, number];
+  dateBounds: [number, number];
 }
 
 export default function FilterBar({
-  trips,
   filters,
   onFiltersChange,
   allCompanions,
@@ -38,9 +51,9 @@ export default function FilterBar({
   expensePerNightBounds,
   dateBounds,
 }: FilterBarProps) {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const transportationTypes = ["plane", "train", "car", "bus", "boat"]
+  const transportationTypes = ["plane", "train", "car", "bus", "boat"];
 
   const hasActiveFilters = useMemo(() => {
     return (
@@ -53,8 +66,8 @@ export default function FilterBar({
       filters.expenseRange[1] !== expenseBounds[1] ||
       filters.expensePerNightRange[0] !== expensePerNightBounds[0] ||
       filters.expensePerNightRange[1] !== expensePerNightBounds[1]
-    )
-  }, [filters, dateBounds, expenseBounds, expensePerNightBounds])
+    );
+  }, [filters, dateBounds, expenseBounds, expensePerNightBounds]);
 
   const resetFilters = () => {
     onFiltersChange({
@@ -64,42 +77,42 @@ export default function FilterBar({
       countries: [],
       expenseRange: expenseBounds,
       expensePerNightRange: expensePerNightBounds,
-    })
-  }
+    });
+  };
 
   const toggleTransportation = (type: string) => {
     const newTypes = filters.transportationTypes.includes(type)
       ? filters.transportationTypes.filter((t) => t !== type)
-      : [...filters.transportationTypes, type]
-    onFiltersChange({ ...filters, transportationTypes: newTypes })
-  }
+      : [...filters.transportationTypes, type];
+    onFiltersChange({ ...filters, transportationTypes: newTypes });
+  };
 
   const toggleCompanion = (companion: string) => {
     const newCompanions = filters.companions.includes(companion)
       ? filters.companions.filter((c) => c !== companion)
-      : [...filters.companions, companion]
-    onFiltersChange({ ...filters, companions: newCompanions })
-  }
+      : [...filters.companions, companion];
+    onFiltersChange({ ...filters, companions: newCompanions });
+  };
 
   const toggleCountry = (country: string) => {
     const newCountries = filters.countries.includes(country)
       ? filters.countries.filter((c) => c !== country)
-      : [...filters.countries, country]
-    onFiltersChange({ ...filters, countries: newCountries })
-  }
+      : [...filters.countries, country];
+    onFiltersChange({ ...filters, countries: newCountries });
+  };
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   return (
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="absolute bottom-4 left-4 right-84 z-[1000]"
+      className="absolute bottom-4 left-4 z-1000 w-[calc(70%-2rem)]"
     >
       <div className="glass rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
@@ -122,8 +135,8 @@ export default function FilterBar({
                 variant="ghost"
                 size="sm"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  resetFilters()
+                  e.stopPropagation();
+                  resetFilters();
                 }}
                 className="h-8 px-2 text-muted-foreground hover:text-foreground"
               >
@@ -156,7 +169,8 @@ export default function FilterBar({
                     <Calendar className="w-4 h-4" />
                     <span>Timeline</span>
                     <span className="ml-auto text-foreground">
-                      {formatDate(filters.dateRange[0])} - {formatDate(filters.dateRange[1])}
+                      {formatDate(filters.dateRange[0])} -{" "}
+                      {formatDate(filters.dateRange[1])}
                     </span>
                   </div>
                   <Slider
@@ -164,7 +178,12 @@ export default function FilterBar({
                     min={dateBounds[0]}
                     max={dateBounds[1]}
                     step={86400000 * 30} // 30 days
-                    onValueChange={(value) => onFiltersChange({ ...filters, dateRange: value as [number, number] })}
+                    onValueChange={(value) =>
+                      onFiltersChange({
+                        ...filters,
+                        dateRange: value as [number, number],
+                      })
+                    }
                     className="py-2"
                   />
                 </div>
@@ -192,7 +211,9 @@ export default function FilterBar({
                       >
                         <div
                           className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: TRANSPORTATION_COLORS[type] }}
+                          style={{
+                            backgroundColor: TRANSPORTATION_COLORS[type],
+                          }}
                         />
                         {TRANSPORTATION_ICONS[type]} {type}
                       </button>
@@ -263,7 +284,8 @@ export default function FilterBar({
                       <DollarSign className="w-4 h-4" />
                       <span>Total Expenses</span>
                       <span className="ml-auto text-foreground">
-                        €{filters.expenseRange[0].toFixed(0)} - €{filters.expenseRange[1].toFixed(0)}
+                        €{filters.expenseRange[0].toFixed(0)} - €
+                        {filters.expenseRange[1].toFixed(0)}
                       </span>
                     </div>
                     <Slider
@@ -272,7 +294,10 @@ export default function FilterBar({
                       max={expenseBounds[1]}
                       step={50}
                       onValueChange={(value) =>
-                        onFiltersChange({ ...filters, expenseRange: value as [number, number] })
+                        onFiltersChange({
+                          ...filters,
+                          expenseRange: value as [number, number],
+                        })
                       }
                       className="py-2"
                     />
@@ -283,7 +308,8 @@ export default function FilterBar({
                       <DollarSign className="w-4 h-4" />
                       <span>Per Night</span>
                       <span className="ml-auto text-foreground">
-                        €{filters.expensePerNightRange[0].toFixed(0)} - €{filters.expensePerNightRange[1].toFixed(0)}
+                        €{filters.expensePerNightRange[0].toFixed(0)} - €
+                        {filters.expensePerNightRange[1].toFixed(0)}
                       </span>
                     </div>
                     <Slider
@@ -292,7 +318,10 @@ export default function FilterBar({
                       max={expensePerNightBounds[1]}
                       step={10}
                       onValueChange={(value) =>
-                        onFiltersChange({ ...filters, expensePerNightRange: value as [number, number] })
+                        onFiltersChange({
+                          ...filters,
+                          expensePerNightRange: value as [number, number],
+                        })
                       }
                       className="py-2"
                     />
@@ -304,5 +333,5 @@ export default function FilterBar({
         </AnimatePresence>
       </div>
     </motion.div>
-  )
+  );
 }

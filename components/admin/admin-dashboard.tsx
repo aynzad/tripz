@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { Trip } from "@/lib/types"
-import { logoutAction } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import type { Trip } from "@/lib/types";
+import { logoutAction } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 import {
   MapPin,
   Plus,
@@ -15,13 +15,15 @@ import {
   DollarSign,
   ChevronLeft,
   AlertCircle,
-} from "lucide-react"
-import Link from "next/link"
-import { calculateTotalExpenses } from "@/lib/trips"
-import TripForm from "./trip-form"
-import ImportModal from "./import-modal"
-import { deleteTrip } from "@/app/admin/actions"
-import { motion, AnimatePresence } from "framer-motion"
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { calculateTotalExpenses } from "@/lib/trips";
+import { getCityImagePath } from "@/lib/utils";
+import TripForm from "./trip-form";
+import ImportModal from "./import-modal";
+import { deleteTrip } from "@/app/admin/actions";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,70 +33,76 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface AdminUser {
-  id: string
-  name: string
-  email: string
-  image?: string
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
 }
 
 interface AdminDashboardProps {
-  user: AdminUser
-  initialTrips: Trip[]
+  user: AdminUser;
+  initialTrips: Trip[];
 }
 
-export default function AdminDashboard({ user, initialTrips }: AdminDashboardProps) {
-  const [trips, setTrips] = useState(initialTrips)
-  const [showTripForm, setShowTripForm] = useState(false)
-  const [editingTrip, setEditingTrip] = useState<Trip | null>(null)
-  const [showImportModal, setShowImportModal] = useState(false)
-  const [deletingTripId, setDeletingTripId] = useState<string | null>(null)
+export default function AdminDashboard({
+  user,
+  initialTrips,
+}: AdminDashboardProps) {
+  const [trips, setTrips] = useState(initialTrips);
+  const [showTripForm, setShowTripForm] = useState(false);
+  const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [deletingTripId, setDeletingTripId] = useState<string | null>(null);
 
   const handleTripSaved = (savedTrip: Trip) => {
     if (editingTrip) {
-      setTrips(trips.map((t) => (t.id === savedTrip.id ? savedTrip : t)))
+      setTrips(trips.map((t) => (t.id === savedTrip.id ? savedTrip : t)));
     } else {
-      setTrips([savedTrip, ...trips])
+      setTrips([savedTrip, ...trips]);
     }
-    setShowTripForm(false)
-    setEditingTrip(null)
-  }
+    setShowTripForm(false);
+    setEditingTrip(null);
+  };
 
   const handleDeleteTrip = async () => {
-    if (!deletingTripId) return
+    if (!deletingTripId) return;
 
     try {
-      await deleteTrip(deletingTripId)
-      setTrips(trips.filter((t) => t.id !== deletingTripId))
+      await deleteTrip(deletingTripId);
+      setTrips(trips.filter((t) => t.id !== deletingTripId));
     } catch {
-      console.error("Failed to delete trip")
+      console.error("Failed to delete trip");
     }
-    setDeletingTripId(null)
-  }
+    setDeletingTripId(null);
+  };
 
   const handleImportComplete = (importedTrips: Trip[]) => {
-    const tripMap = new Map(trips.map((t) => [t.id, t]))
-    importedTrips.forEach((t) => tripMap.set(t.id, t))
+    const tripMap = new Map(trips.map((t) => [t.id, t]));
+    importedTrips.forEach((t) => tripMap.set(t.id, t));
     setTrips(
-      Array.from(tripMap.values()).sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()),
-    )
-    setShowImportModal(false)
-  }
+      Array.from(tripMap.values()).sort(
+        (a, b) =>
+          new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      )
+    );
+    setShowImportModal(false);
+  };
 
   const handleSignOut = async () => {
-    await logoutAction()
-    window.location.href = "/"
-  }
+    await logoutAction();
+    window.location.href = "/";
+  };
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,7 +110,10 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 hover:bg-secondary rounded-lg transition-colors">
+            <Link
+              href="/"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+            >
               <ChevronLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-2">
@@ -116,11 +127,20 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-full">
               {user.image && (
-                <img src={user.image || "/placeholder.svg"} alt={user.name || ""} className="w-6 h-6 rounded-full" />
+                <img
+                  src={user.image || "/placeholder.svg"}
+                  alt={user.name || ""}
+                  className="w-6 h-6 rounded-full"
+                />
               )}
               <span className="text-sm">{user.name || user.email}</span>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSignOut}
+              className="text-muted-foreground"
+            >
               <LogOut className="w-4 h-4 mr-2" />
               Sign out
             </Button>
@@ -134,7 +154,9 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Trips</h1>
-            <p className="text-muted-foreground">{trips.length} trips in your collection</p>
+            <p className="text-muted-foreground">
+              {trips.length} trips in your collection
+            </p>
           </div>
 
           <div className="flex gap-3">
@@ -163,32 +185,47 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
               >
                 <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4 group hover:border-primary/50 transition-colors">
                   {/* Image */}
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                    <img
-                      src={`/.jpg?key=22rv7&height=80&width=80&query=${encodeURIComponent((trip.destinations[1]?.city || trip.destinations[0]?.city) + " travel")}`}
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
+                    <Image
+                      src={getCityImagePath(
+                        trip.destinations[1]?.city ||
+                          trip.destinations[0]?.city ||
+                          "Unknown"
+                      )}
                       alt={trip.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="80px"
                     />
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg truncate">{trip.name}</h3>
-                    {trip.description && <p className="text-sm text-muted-foreground truncate">{trip.description}</p>}
+                    <h3 className="font-semibold text-lg truncate">
+                      {trip.name}
+                    </h3>
+                    {trip.description && (
+                      <p className="text-sm text-muted-foreground truncate">
+                        {trip.description}
+                      </p>
+                    )}
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                          {formatDate(trip.startDate)} -{" "}
+                          {formatDate(trip.endDate)}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <DollarSign className="w-4 h-4" />
-                        <span>€{calculateTotalExpenses(trip.expenses).toFixed(0)}</span>
+                        <span>
+                          €{calculateTotalExpenses(trip.expenses).toFixed(0)}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
-                        <span>{trip.destinations.length} stops</span>
+                        <span>{trip.destinations.length - 2} stops</span>
                       </div>
                     </div>
                   </div>
@@ -199,13 +236,17 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        setEditingTrip(trip)
-                        setShowTripForm(true)
+                        setEditingTrip(trip);
+                        setShowTripForm(true);
                       }}
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeletingTripId(trip.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeletingTripId(trip.id)}
+                    >
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
@@ -218,9 +259,14 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
             <div className="bg-card rounded-xl border border-border p-12 text-center">
               <MapPin className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">No trips yet</h3>
-              <p className="text-muted-foreground mb-4">Start by adding your first trip or importing from JSON</p>
+              <p className="text-muted-foreground mb-4">
+                Start by adding your first trip or importing from JSON
+              </p>
               <div className="flex justify-center gap-3">
-                <Button variant="outline" onClick={() => setShowImportModal(true)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowImportModal(true)}
+                >
                   <Upload className="w-4 h-4 mr-2" />
                   Import JSON
                 </Button>
@@ -239,8 +285,8 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
         <TripForm
           trip={editingTrip}
           onClose={() => {
-            setShowTripForm(false)
-            setEditingTrip(null)
+            setShowTripForm(false);
+            setEditingTrip(null);
           }}
           onSave={handleTripSaved}
         />
@@ -248,11 +294,17 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
 
       {/* Import Modal */}
       {showImportModal && (
-        <ImportModal onClose={() => setShowImportModal(false)} onImportComplete={handleImportComplete} />
+        <ImportModal
+          onClose={() => setShowImportModal(false)}
+          onImportComplete={handleImportComplete}
+        />
       )}
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deletingTripId} onOpenChange={() => setDeletingTripId(null)}>
+      <AlertDialog
+        open={!!deletingTripId}
+        onOpenChange={() => setDeletingTripId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
@@ -260,17 +312,21 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
               Delete Trip
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this trip? This action cannot be undone.
+              Are you sure you want to delete this trip? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteTrip} className="bg-destructive text-destructive-foreground">
+            <AlertDialogAction
+              onClick={handleDeleteTrip}
+              className="bg-destructive text-destructive-foreground"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }
