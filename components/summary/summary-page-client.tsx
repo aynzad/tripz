@@ -37,6 +37,7 @@ import {
   Globe,
   Euro,
   ArrowLeft,
+  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
@@ -344,7 +345,7 @@ export default function SummaryPageClient({
               <CardTitle className="text-sm font-medium">
                 Average Per Night
               </CardTitle>
-              <Euro className="h-4 w-4 text-muted-foreground" />
+              <Moon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -390,7 +391,9 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.mostExpensiveTrip.name}
+                    <Link href={`/trips/${statistics.mostExpensiveTrip.id}`}>
+                      {statistics.mostExpensiveTrip.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-green-600">
                     {formatCurrency(
@@ -422,7 +425,9 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.cheapestTrip.name}
+                    <Link href={`/trips/${statistics.cheapestTrip.id}`}>
+                      {statistics.cheapestTrip.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-blue-600">
                     {formatCurrency(
@@ -454,7 +459,11 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.mostExpensivePerNight.name}
+                    <Link
+                      href={`/trips/${statistics.mostExpensivePerNight.id}`}
+                    >
+                      {statistics.mostExpensivePerNight.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-orange-600">
                     {formatCurrency(
@@ -494,7 +503,9 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.cheapestPerNight.name}
+                    <Link href={`/trips/${statistics.cheapestPerNight.id}`}>
+                      {statistics.cheapestPerNight.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-purple-600">
                     {formatCurrency(
@@ -534,7 +545,9 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.longestTrip.name}
+                    <Link href={`/trips/${statistics.longestTrip.id}`}>
+                      {statistics.longestTrip.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-red-600">
                     {getDuration(statistics.longestTrip)}{" "}
@@ -564,7 +577,9 @@ export default function SummaryPageClient({
               <CardContent>
                 <div className="space-y-2">
                   <div className="text-2xl font-bold">
-                    {statistics.shortestTrip.name}
+                    <Link href={`/trips/${statistics.shortestTrip.id}`}>
+                      {statistics.shortestTrip.name}
+                    </Link>
                   </div>
                   <div className="text-lg font-semibold text-indigo-600">
                     {getDuration(statistics.shortestTrip)}{" "}

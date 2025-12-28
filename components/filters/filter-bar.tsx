@@ -106,7 +106,7 @@ export default function FilterBar({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="absolute bottom-4 left-4 z-1000 w-[calc(70%-2rem)]"
+      className="absolute bottom-4 left-4 z-1000 w-[calc(60%-2rem)]"
     >
       <div className="glass rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}

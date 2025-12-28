@@ -4,6 +4,8 @@ import type { Destination } from "@/lib/types";
 import { TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types";
 import { motion } from "framer-motion";
 import { Home, MapPin } from "lucide-react";
+import Link from "next/link";
+import { normalizeCityNameForUrl } from "@/lib/utils";
 
 interface RouteTimelineProps {
   destinations: Destination[];
@@ -62,9 +64,14 @@ export default function RouteTimeline({ destinations }: RouteTimelineProps) {
               <div className="flex-1 bg-card rounded-xl p-4 border border-border">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-foreground">
-                      {dest.city}
-                    </h3>
+                    <Link
+                      href={`/cities/${normalizeCityNameForUrl(dest.city)}`}
+                      className="hover:text-primary transition-colors"
+                    >
+                      <h3 className="font-semibold text-foreground">
+                        {dest.city}
+                      </h3>
+                    </Link>
                     <p className="text-sm text-muted-foreground">
                       {dest.country}
                     </p>

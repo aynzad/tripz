@@ -161,34 +161,34 @@ export default function TripSidebar({
 
                   {/* Card Footer */}
                   <div className="bg-card p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-sm">
-                          <span className="font-medium">
-                            {formatCurrency(totalExpenses, 0)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <span>{formatCurrency(perNight, 0)}/night</span>
-                        </div>
-                        {trip.companions.length > 0 && (
-                          <div className="flex items-center gap-1 text-sm text-foreground">
-                            <Users className="w-3 h-3" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 flex justify-end">
-                        <Link
-                          href={`/trips/${trip.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-sm font-medium text-foreground
+                    <Link
+                      href={`/trips/${trip.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-sm font-medium text-foreground
                         transition-colors group/link
                       "
-                        >
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1 text-sm">
+                            <span className="font-medium">
+                              {formatCurrency(totalExpenses, 0)}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <span>{formatCurrency(perNight, 0)}/night</span>
+                          </div>
+                          {trip.companions.length > 0 && (
+                            <div className="flex items-center gap-1 text-sm text-foreground">
+                              <Users className="w-3 h-3" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 flex justify-end">
                           <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
-                        </Link>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </motion.div>

@@ -196,6 +196,10 @@
   background: oklch(0.45 0.01 260);
 }
 
+a {
+  cursor: pointer;
+}
+
 /* Glass effect */
 .glass {
   background: oklch(0.15 0.01 260 / 0.6);

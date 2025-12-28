@@ -743,7 +743,7 @@ export default function TripMap({
       </div>
 
       {/* Transportation Legend */}
-      <div className="absolute bottom-4 right-4 flex flex-col gap-2 glass rounded-lg p-3 h-13 items-center justify-center z-40 max-w-[calc(30%-2rem)]">
+      <div className="absolute bottom-4 right-4 flex flex-col gap-2 glass rounded-lg p-3 h-13 items-center justify-center z-40 max-w-[calc(40%-1rem)]">
         <div className="flex flex-wrap gap-3">
           {Object.entries(TRANSPORTATION_ICONS).map(([type, icon]) => (
             <div key={type} className="flex items-center gap-1.5">
