@@ -1,60 +1,32 @@
 'use server'
 
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth-options'
 
-// Simplified auth for v0 preview environment
-
-type User = {
+export type User = {
   id: string
-  name: string
-  email: string
-  image?: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
 }
 
-type Session = {
+export type Session = {
   user: User | null
 }
 
 export async function auth(): Promise<Session> {
-  const cookieStore = await cookies()
-  const sessionCookie = cookieStore.get('auth-session')
+  const session = await getServerSession(authOptions)
 
-  if (sessionCookie?.value) {
-    try {
-      const user = JSON.parse(sessionCookie.value)
-      return { user }
-    } catch {
-      return { user: null }
+  if (session?.user) {
+    return {
+      user: {
+        id: session.user.id || session.user.email || 'unknown',
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
+      },
     }
   }
 
   return { user: null }
-}
-
-export async function loginAction(formData: FormData) {
-  const email = formData.get('email') as string
-
-  if (email) {
-    const cookieStore = await cookies()
-    const user = {
-      id: 'user-1',
-      name: email.split('@')[0],
-      email: email,
-    }
-    cookieStore.set('auth-session', JSON.stringify(user), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-    })
-  }
-
-  redirect('/admin')
-}
-
-export async function logoutAction() {
-  const cookieStore = await cookies()
-  cookieStore.delete('auth-session')
-  redirect('/')
 }

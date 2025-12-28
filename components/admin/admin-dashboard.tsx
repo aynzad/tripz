@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import type { Trip } from '@/lib/types'
-import { logoutAction } from '@/lib/auth'
+import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -101,9 +101,8 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
     setShowImportModal(false)
   }
 
-  const handleSignOut = async () => {
-    await logoutAction()
-    window.location.href = '/'
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' })
   }
 
   // Get unique companions for filter
