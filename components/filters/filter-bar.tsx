@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/utils";
 
 export interface FilterState {
   dateRange: [number, number];
@@ -99,13 +100,6 @@ export default function FilterBar({
       ? filters.countries.filter((c) => c !== country)
       : [...filters.countries, country];
     onFiltersChange({ ...filters, countries: newCountries });
-  };
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    });
   };
 
   return (

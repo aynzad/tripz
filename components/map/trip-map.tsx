@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getCityImagePath } from "@/lib/utils";
+import { getCityImagePath, formatDate } from "@/lib/utils";
 
 interface TripMapProps {
   trips: Trip[];
@@ -465,14 +465,6 @@ export default function TripMap({
       if (trip) focusTrip(trip);
     }
   }, [selectedTripId, trips, focusTrip]);
-
-  const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
 
   const routeData = useMemo(() => {
     return trips.map((trip) => {

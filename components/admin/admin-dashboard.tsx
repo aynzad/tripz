@@ -20,7 +20,11 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { calculateTotalExpenses } from "@/lib/trips";
-import { getCityImagePath } from "@/lib/utils";
+import {
+  getCityImagePath,
+  formatDate,
+  getDestinationsExcludingHome,
+} from "@/lib/utils";
 import TripForm from "./trip-form";
 import ImportModal from "./import-modal";
 import { deleteTrip } from "@/app/admin/actions";
@@ -95,14 +99,6 @@ export default function AdminDashboard({
   const handleSignOut = async () => {
     await logoutAction();
     window.location.href = "/";
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
   };
 
   return (
@@ -190,7 +186,8 @@ export default function AdminDashboard({
                   <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
                     <Image
                       src={getCityImagePath(
-                        trip.destinations[1]?.city ||
+                        getDestinationsExcludingHome(trip.destinations)[0]
+                          ?.city ||
                           trip.destinations[0]?.city ||
                           "Unknown"
                       )}

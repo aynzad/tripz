@@ -3,7 +3,7 @@
 import type { Destination } from "@/lib/types";
 import { TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from "@/lib/types";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { Home, MapPin } from "lucide-react";
 
 interface RouteTimelineProps {
   destinations: Destination[];
@@ -43,18 +43,18 @@ export default function RouteTimeline({ destinations }: RouteTimelineProps) {
               {/* Icon */}
               <div
                 className={`
-                  relative z-10 flex-shrink-0 w-10 h-10 rounded-full
+                  relative z-10 shrink-0 w-10 h-10 rounded-full
                   flex items-center justify-center
                   ${isFirst || isLast ? "bg-accent" : "bg-primary"}
                   text-primary-foreground
                 `}
               >
                 {isFirst ? (
-                  <span className="text-xs font-bold">1</span>
+                  <Home className="w-4 h-4" />
                 ) : isLast ? (
                   <MapPin className="w-4 h-4" />
                 ) : (
-                  <span className="text-xs font-bold">{index + 1}</span>
+                  <span className="text-xs font-bold">{index}</span>
                 )}
               </div>
 

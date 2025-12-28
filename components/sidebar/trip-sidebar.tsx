@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, MapPin, Users } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCityImagePath } from "@/lib/utils";
+import {
+  getCityImagePath,
+  formatDate,
+  getDestinationsExcludingHome,
+} from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 interface TripSidebarProps {
@@ -21,20 +25,14 @@ export default function TripSidebar({
   onTripSelect,
 }: TripSidebarProps) {
   const router = useRouter();
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-  };
 
   const getMainCity = (trip: Trip) => {
-    const destinations = trip.destinations.filter((d) => d.city !== "Berlin");
+    const destinations = getDestinationsExcludingHome(trip.destinations);
     return destinations[0]?.city || trip.destinations[0]?.city || "Unknown";
   };
 
   const getMainCountry = (trip: Trip) => {
-    const destinations = trip.destinations.filter((d) => d.city !== "Berlin");
+    const destinations = getDestinationsExcludingHome(trip.destinations);
     return (
       destinations[0]?.country || trip.destinations[0]?.country || "Unknown"
     );
