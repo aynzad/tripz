@@ -1,5 +1,7 @@
 {
-  "name": "trip-visualization",
+  "name": "tripz",
+  "description": "Tripz - Visualize Your Travels",
+  "author": "Alireza Esfahani <alireza@esfahani.dev>",
   "version": "0.1.0",
   "private": true,
   "scripts": {
