@@ -24,6 +24,7 @@ import {
   getCityImagePath,
   formatDate,
   getDestinationsExcludingHome,
+  formatCurrency,
 } from "@/lib/utils";
 import TripForm from "./trip-form";
 import ImportModal from "./import-modal";
@@ -219,7 +220,7 @@ export default function AdminDashboard({
                       <div className="flex items-center gap-1">
                         <DollarSign className="w-4 h-4" />
                         <span>
-                          €{calculateTotalExpenses(trip.expenses).toFixed(0)}
+                          {formatCurrency(calculateTotalExpenses(trip.expenses), 0)}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">

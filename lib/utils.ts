@@ -27,6 +27,25 @@ export function formatDate(date: Date | string | number): string {
 }
 
 /**
+ * Formats a number as UK-style currency (e.g., 1,234.52).
+ * @param amount - The amount to format
+ * @param decimals - Number of decimal places (default: 2)
+ * @param showSymbol - Whether to include the € symbol (default: true)
+ * @returns Formatted currency string
+ */
+export function formatCurrency(
+  amount: number,
+  decimals: number = 2,
+  showSymbol: boolean = true
+): string {
+  const formatted = amount.toLocaleString("en-GB", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return showSymbol ? `€${formatted}` : formatted;
+}
+
+/**
  * Gets the home city from destinations (always the first destination).
  * The home city is the starting/ending point of the trip.
  */

@@ -16,7 +16,7 @@ import {
   MapPin,
   DollarSign,
   Moon,
-  Map,
+  Globe,
 } from "lucide-react";
 import TripDetailMap from "@/components/trip-detail/trip-detail-map";
 import ExpenseBreakdown from "@/components/trip-detail/expense-breakdown";
@@ -25,6 +25,7 @@ import {
   getCityImagePath,
   formatDate,
   getDestinationsExcludingHome,
+  formatCurrency,
 } from "@/lib/utils";
 
 type Params = Promise<{ id: string }>;
@@ -177,7 +178,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               <span className="text-sm">Total Expenses</span>
             </div>
             <p className="text-3xl font-bold text-accent">
-              €{totalExpenses.toFixed(0)}
+              {formatCurrency(totalExpenses, 0)}
             </p>
           </div>
           <div className="bg-card rounded-xl p-6 border border-border">
@@ -186,7 +187,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
               <span className="text-sm">Per Night</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
-              €{perNight.toFixed(0)}
+              {formatCurrency(perNight, 0)}
             </p>
           </div>
           <div className="bg-card rounded-xl p-6 border border-border">
@@ -202,7 +203,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
           </div>
           <div className="bg-card rounded-xl p-6 border border-border">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Map className="w-4 h-4" />
+              <Globe className="w-4 h-4" />
               <span className="text-sm">
                 {pluralize("Country", uniqueCountryCount)}
               </span>

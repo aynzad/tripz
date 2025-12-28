@@ -30,6 +30,8 @@ interface TripMapProps {
   onTripSelect: (tripId: string | null) => void;
 }
 
+const DEFAULT_ZOOM = 4;
+
 // Map projection utilities (Web Mercator)
 function latLngToPoint(lat: number, lng: number, zoom: number, tileSize = 256) {
   const scale = Math.pow(2, zoom) * tileSize;
@@ -163,7 +165,7 @@ export default function TripMap({
     width: 1200,
     height: 800,
   });
-  const [zoom, setZoom] = useState(5);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const [center, setCenter] = useState({ lat: 45, lng: 10 });
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isLeftMouseDown, setIsLeftMouseDown] = useState(false);
@@ -287,7 +289,7 @@ export default function TripMap({
   const handleZoomIn = () => setZoom((z) => Math.min(z + 1, 12));
   const handleZoomOut = () => setZoom((z) => Math.max(z - 1, 3));
   const handleReset = () => {
-    setZoom(5);
+    setZoom(DEFAULT_ZOOM);
     const centerLat = (bounds.minLat + bounds.maxLat) / 2;
     const centerLng = (bounds.minLng + bounds.maxLng) / 2;
     setCenter({ lat: centerLat, lng: centerLng });
@@ -665,7 +667,7 @@ export default function TripMap({
                   className="object-cover"
                   sizes="280px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
                 <div className="absolute bottom-2 left-3 right-3">
                   <h3 className="text-white font-semibold text-lg">
                     {hoveredDestination.destination.city}

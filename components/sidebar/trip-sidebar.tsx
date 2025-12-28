@@ -2,16 +2,19 @@
 
 import type { Trip } from "@/lib/types";
 import { calculateTotalExpenses, calculateExpensesPerNight } from "@/lib/trips";
+import { calculateStatistics } from "@/lib/statistics";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, MapPin, Users } from "lucide-react";
+import { ArrowRight, MapPin, Users, BarChart3, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   getCityImagePath,
   formatDate,
   getDestinationsExcludingHome,
+  formatCurrency,
 } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 interface TripSidebarProps {
   trips: Trip[];
@@ -25,6 +28,8 @@ export default function TripSidebar({
   onTripSelect,
 }: TripSidebarProps) {
   const router = useRouter();
+
+  const statistics = useMemo(() => calculateStatistics(trips), [trips]);
 
   const getMainCity = (trip: Trip) => {
     const destinations = getDestinationsExcludingHome(trip.destinations);
@@ -40,6 +45,51 @@ export default function TripSidebar({
 
   return (
     <div className="w-80 h-full bg-card/50 backdrop-blur-sm border-l border-border flex flex-col">
+      {/* Summary Card */}
+      <div className="p-3 border-b border-border">
+        <Link href="/summary">
+          <div className="p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                </div>
+                <h3 className="font-semibold text-sm">Trip Statistics</h3>
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="flex flex-col">
+                <span className="text-muted-foreground">Trips</span>
+                <span className="font-semibold text-base">
+                  {statistics.totalTrips}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-muted-foreground">Total</span>
+                <span className="font-semibold text-base">
+                  {formatCurrency(statistics.totalExpenses, 0)}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-muted-foreground">Countries</span>
+                <span className="font-semibold text-base">
+                  {statistics.mostVisitedCountries.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 text-xs pt-2 border-t border-border/50">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <TrendingUp className="h-3 w-3" />
+                <span>View full stats</span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </div>
+
       {/* Trip List */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
         <AnimatePresence mode="popLayout">
@@ -115,11 +165,11 @@ export default function TripSidebar({
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1 text-sm">
                           <span className="font-medium">
-                            €{totalExpenses.toFixed(0)}
+                            {formatCurrency(totalExpenses, 0)}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <span>€{perNight.toFixed(0)}/night</span>
+                          <span>{formatCurrency(perNight, 0)}/night</span>
                         </div>
                         {trip.companions.length > 0 && (
                           <div className="flex items-center gap-1 text-sm text-foreground">

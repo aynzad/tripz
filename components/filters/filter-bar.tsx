@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatCurrency } from "@/lib/utils";
 
 export interface FilterState {
   dateRange: [number, number];
@@ -278,8 +278,8 @@ export default function FilterBar({
                       <DollarSign className="w-4 h-4" />
                       <span>Total Expenses</span>
                       <span className="ml-auto text-foreground">
-                        €{filters.expenseRange[0].toFixed(0)} - €
-                        {filters.expenseRange[1].toFixed(0)}
+                        {formatCurrency(filters.expenseRange[0], 0)} -{" "}
+                        {formatCurrency(filters.expenseRange[1], 0)}
                       </span>
                     </div>
                     <Slider
@@ -302,8 +302,8 @@ export default function FilterBar({
                       <DollarSign className="w-4 h-4" />
                       <span>Per Night</span>
                       <span className="ml-auto text-foreground">
-                        €{filters.expensePerNightRange[0].toFixed(0)} - €
-                        {filters.expensePerNightRange[1].toFixed(0)}
+                        {formatCurrency(filters.expensePerNightRange[0], 0)} -{" "}
+                        {formatCurrency(filters.expensePerNightRange[1], 0)}
                       </span>
                     </div>
                     <Slider

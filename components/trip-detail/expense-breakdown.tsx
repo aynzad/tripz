@@ -2,6 +2,7 @@
 
 import type { Expenses } from "@/lib/types";
 import { calculateTotalExpenses } from "@/lib/trips";
+import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Home, Utensils, Ticket, Package, Plane } from "lucide-react";
 
@@ -39,12 +40,12 @@ export default function ExpenseBreakdown({
         <div className="flex items-center justify-between mb-2">
           <span className="text-muted-foreground">Total Expenses</span>
           <span className="text-3xl font-bold text-accent">
-            €{total.toFixed(2)}
+            {formatCurrency(total, 2)}
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Per Night Average</span>
-          <span className="font-medium">€{(total / nights).toFixed(2)}</span>
+          <span className="font-medium">{formatCurrency(total / nights, 2)}</span>
         </div>
       </div>
 
@@ -72,7 +73,7 @@ export default function ExpenseBreakdown({
                     <span className="font-medium">{label}</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-semibold">€{value.toFixed(2)}</span>
+                    <span className="font-semibold">{formatCurrency(value, 2)}</span>
                     <span className="text-sm text-muted-foreground ml-2">
                       ({percentage.toFixed(0)}%)
                     </span>
