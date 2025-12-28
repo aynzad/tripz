@@ -25,4 +25,3 @@ export function getUniqueCountries(trips: Trip[]): string[] {
   trips.forEach((trip) => trip.destinations.forEach((d) => countries.add(d.country)))
   return Array.from(countries).sort()
 }
-

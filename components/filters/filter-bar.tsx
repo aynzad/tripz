@@ -27,6 +27,7 @@ interface FilterBarProps {
   expenseBounds: [number, number]
   expensePerNightBounds: [number, number]
   dateBounds: [number, number]
+  sidebarOpen?: boolean
 }
 
 export default function FilterBar({
@@ -37,6 +38,7 @@ export default function FilterBar({
   expenseBounds,
   expensePerNightBounds,
   dateBounds,
+  sidebarOpen = true,
 }: FilterBarProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -92,7 +94,9 @@ export default function FilterBar({
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="absolute bottom-4 left-4 z-1000 w-[calc(60%-2rem)]"
+      className={`absolute bottom-4 left-4 z-1000 transition-all duration-300 ${
+        sidebarOpen ? 'w-[calc(100%-2rem)] lg:w-[calc(60%-2rem)]' : 'w-[calc(100%-2rem)]'
+      }`}
     >
       <div className="glass overflow-hidden rounded-2xl shadow-2xl">
         {/* Header */}
@@ -145,10 +149,10 @@ export default function FilterBar({
               <div className="space-y-4 px-4 pb-4">
                 {/* Timeline Slider */}
                 <div className="space-y-2">
-                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                  <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4" />
                     <span>Timeline</span>
-                    <span className="text-foreground ml-auto">
+                    <span className="text-foreground ml-auto text-xs sm:text-sm">
                       {formatDate(filters.dateRange[0])} - {formatDate(filters.dateRange[1])}
                     </span>
                   </div>
@@ -196,7 +200,7 @@ export default function FilterBar({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {/* Companions */}
                   {allCompanions.length > 0 && (
                     <div className="space-y-2">
@@ -247,12 +251,12 @@ export default function FilterBar({
                 </div>
 
                 {/* Expense Sliders */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
                       <DollarSign className="h-4 w-4" />
                       <span>Total Expenses</span>
-                      <span className="text-foreground ml-auto">
+                      <span className="text-foreground ml-auto text-xs sm:text-sm">
                         {formatCurrency(filters.expenseRange[0], 0)} - {formatCurrency(filters.expenseRange[1], 0)}
                       </span>
                     </div>
@@ -272,10 +276,10 @@ export default function FilterBar({
                   </div>
 
                   <div className="space-y-2">
-                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
                       <DollarSign className="h-4 w-4" />
                       <span>Per Night</span>
-                      <span className="text-foreground ml-auto">
+                      <span className="text-foreground ml-auto text-xs sm:text-sm">
                         {formatCurrency(filters.expensePerNightRange[0], 0)} -{' '}
                         {formatCurrency(filters.expensePerNightRange[1], 0)}
                       </span>

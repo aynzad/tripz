@@ -61,7 +61,7 @@ export default async function CityDetailPage({ params }: { params: Params }) {
         {/* Back Button */}
         <Link
           href="/"
-          className="glass hover:bg-secondary/50 absolute top-6 left-6 z-10 rounded-full p-3 transition-colors"
+          className="glass hover:bg-secondary/50 absolute top-6 right-6 z-10 rounded-full p-3 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>

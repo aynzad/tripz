@@ -649,7 +649,7 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
       </div>
 
       {/* Transportation Legend */}
-      <div className="glass absolute right-4 bottom-4 z-40 flex h-13 max-w-[calc(40%-1rem)] flex-col items-center justify-center gap-2 rounded-lg p-3">
+      <div className="glass absolute right-4 bottom-4 z-40 hidden h-13 max-w-[calc(40%-1rem)] flex-col items-center justify-center gap-2 rounded-lg p-3 lg:flex">
         <div className="flex flex-wrap gap-3">
           {Object.entries(TRANSPORTATION_ICONS).map(([type, icon]) => (
             <div key={type} className="flex items-center gap-1.5">
