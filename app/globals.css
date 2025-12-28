@@ -207,3 +207,9 @@
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid oklch(0.28 0.01 260 / 0.9);
 }
+
+/* Dynamic viewport height for mobile browsers (iPhone) */
+.h-screen-dynamic {
+  height: 100vh; /* Fallback for older browsers */
+  height: 100dvh; /* Dynamic viewport height - adjusts for mobile browser UI */
+}
