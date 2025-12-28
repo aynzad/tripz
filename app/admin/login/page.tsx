@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { MapPin } from 'lucide-react'
+import Image from 'next/image'
+import { Logo } from '@/components/logo'
 
 export default async function LoginPage() {
   const session = await auth()
@@ -16,12 +17,8 @@ export default async function LoginPage() {
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-card border-border rounded-2xl border p-8 shadow-xl">
-          {/* Logo */}
-          <div className="mb-8 flex items-center justify-center gap-2">
-            <div className="bg-primary/20 flex h-12 w-12 items-center justify-center rounded-xl">
-              <MapPin className="text-primary h-6 w-6" />
-            </div>
-            <span className="text-2xl font-bold">TripViz</span>
+          <div className="mb-1 flex flex-col items-center justify-center gap-2">
+            <Logo className="fill-primary size-24" />
           </div>
 
           <h1 className="mb-2 text-center text-2xl font-semibold">Admin Access</h1>

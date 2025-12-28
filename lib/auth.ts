@@ -1,3 +1,5 @@
+'use server'
+
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -31,8 +33,6 @@ export async function auth(): Promise<Session> {
 }
 
 export async function loginAction(formData: FormData) {
-  'use server'
-
   const email = formData.get('email') as string
 
   if (email) {
@@ -54,8 +54,6 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function logoutAction() {
-  'use server'
-
   const cookieStore = await cookies()
   cookieStore.delete('auth-session')
   redirect('/')

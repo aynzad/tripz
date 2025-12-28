@@ -122,6 +122,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  a {
+    @apply cursor-pointer;
+  }
 }
 
 /* Leaflet map styles */
@@ -194,10 +197,6 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: oklch(0.45 0.01 260);
-}
-
-a {
-  cursor: pointer;
 }
 
 /* Glass effect */

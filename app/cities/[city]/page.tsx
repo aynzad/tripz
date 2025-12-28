@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 
   return {
-    title: `${cityName} - TripViz`,
+    title: `${cityName} - Tripz`,
     description: `Explore trips that visited ${cityName}`,
   }
 }

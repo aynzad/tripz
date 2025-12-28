@@ -111,7 +111,7 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-border'} ${file && !error ? 'border-green-500 bg-green-500/10' : ''} ${error ? 'border-destructive bg-destructive/10' : ''} `}
+            className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-border'} ${file && !error ? 'border-green-500 bg-green-500/10' : ''} ${error ? 'border-destructive bg-destructive/10' : ''} `}
           >
             {file && !error ? (
               <div className="flex flex-col items-center gap-3">

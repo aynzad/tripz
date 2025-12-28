@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { Trip } from '@/lib/types'
 import { logoutAction } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import pluralize from 'pluralize'
 import {
   MapPin,
@@ -16,10 +18,12 @@ import {
   DollarSign,
   ChevronLeft,
   AlertCircle,
+  Search,
+  X,
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { calculateTotalExpenses } from '@/lib/trips'
+import { calculateTotalExpenses, getUniqueCompanions } from '@/lib/trips'
 import { getCityImagePath, formatDate, getDestinationsExcludingHome, formatCurrency } from '@/lib/utils'
 import TripForm from './trip-form'
 import ImportModal from './import-modal'
@@ -35,6 +39,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Logo } from '../logo'
+import { Badge } from '@/components/ui/badge'
 
 interface AdminUser {
   id: string
@@ -48,12 +54,21 @@ interface AdminDashboardProps {
   initialTrips: Trip[]
 }
 
+type SortField = 'date' | 'price' | 'name' | 'destinations'
+type SortOrder = 'asc' | 'desc'
+
 export default function AdminDashboard({ user, initialTrips }: AdminDashboardProps) {
   const [trips, setTrips] = useState(initialTrips)
   const [showTripForm, setShowTripForm] = useState(false)
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null)
   const [showImportModal, setShowImportModal] = useState(false)
   const [deletingTripId, setDeletingTripId] = useState<string | null>(null)
+
+  // Filter and sort state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCompanion, setSelectedCompanion] = useState<string>('all')
+  const [sortField, setSortField] = useState<SortField>('date')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
 
   const handleTripSaved = (savedTrip: Trip) => {
     if (editingTrip) {
@@ -91,6 +106,61 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
     window.location.href = '/'
   }
 
+  // Get unique companions for filter
+  const allCompanions = useMemo(() => getUniqueCompanions(trips), [trips])
+
+  // Filter and sort trips
+  const filteredAndSortedTrips = useMemo(() => {
+    let filtered = [...trips]
+
+    // Search filter (name, city, country)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      filtered = filtered.filter((trip) => {
+        const nameMatch = trip.name.toLowerCase().includes(query)
+        const cityMatch = trip.destinations.some((dest) => dest.city.toLowerCase().includes(query))
+        const countryMatch = trip.destinations.some((dest) => dest.country.toLowerCase().includes(query))
+        return nameMatch || cityMatch || countryMatch
+      })
+    }
+
+    // Companion filter
+    if (selectedCompanion !== 'all') {
+      filtered = filtered.filter((trip) => trip.companions.includes(selectedCompanion))
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      let comparison = 0
+
+      switch (sortField) {
+        case 'date':
+          comparison = new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          break
+        case 'price':
+          comparison = calculateTotalExpenses(a.expenses) - calculateTotalExpenses(b.expenses)
+          break
+        case 'name':
+          comparison = a.name.localeCompare(b.name)
+          break
+        case 'destinations':
+          comparison = a.destinations.length - b.destinations.length
+          break
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
+
+    return filtered
+  }, [trips, searchQuery, selectedCompanion, sortField, sortOrder])
+
+  const hasActiveFilters = searchQuery.trim() !== '' || selectedCompanion !== 'all'
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setSelectedCompanion('all')
+  }
+
   return (
     <div className="bg-background min-h-screen">
       {/* Header */}
@@ -101,10 +171,8 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
               <ChevronLeft className="h-5 w-5" />
             </Link>
             <div className="flex items-center gap-2">
-              <div className="bg-primary/20 flex h-8 w-8 items-center justify-center rounded-lg">
-                <MapPin className="text-primary h-4 w-4" />
-              </div>
-              <span className="font-semibold">TripViz Admin</span>
+              <Logo className="fill-primary size-8" />
+              <span className="font-semibold">Tripz Admin</span>
             </div>
           </div>
 
@@ -131,7 +199,7 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
           <div>
             <h1 className="mb-2 text-3xl font-bold">Manage Trips</h1>
             <p className="text-muted-foreground">
-              {trips.length} {pluralize('trip', trips.length)} in your collection
+              {filteredAndSortedTrips.length} of {trips.length} {pluralize('trip', trips.length)} shown
             </p>
           </div>
 
@@ -147,10 +215,105 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
           </div>
         </div>
 
+        {/* Search and Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+              <Input
+                type="text"
+                placeholder="Search by name, city, or country..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Companion Filter */}
+            <Select value={selectedCompanion} onValueChange={setSelectedCompanion}>
+              <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="Filter by companion" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Companions</SelectItem>
+                {allCompanions.map((companion) => (
+                  <SelectItem key={companion} value={companion}>
+                    {companion}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Sort Field */}
+            <Select value={sortField} onValueChange={(value) => setSortField(value as SortField)}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Date</SelectItem>
+                <SelectItem value="price">Total Price</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="destinations">Destinations</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Sort Order */}
+            <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
+              <SelectTrigger className="w-full md:w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Descending</SelectItem>
+                <SelectItem value="asc">Ascending</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Clear Filters */}
+            {hasActiveFilters && (
+              <Button variant="outline" onClick={clearFilters} className="w-full md:w-auto">
+                <X className="mr-2 h-4 w-4" />
+                Clear
+              </Button>
+            )}
+          </div>
+
+          {/* Active Filters Badges */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground text-sm">Active filters:</span>
+              {searchQuery && (
+                <Badge variant="secondary" className="gap-1">
+                  Search: {searchQuery}
+                  <button onClick={() => setSearchQuery('')} className="ml-1 hover:opacity-70">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+              {selectedCompanion !== 'all' && (
+                <Badge variant="secondary" className="gap-1">
+                  Companion: {selectedCompanion}
+                  <button onClick={() => setSelectedCompanion('all')} className="ml-1 hover:opacity-70">
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Trip List */}
         <div className="grid gap-4">
           <AnimatePresence mode="popLayout">
-            {trips.map((trip, index) => (
+            {filteredAndSortedTrips.map((trip, index) => (
               <motion.div
                 key={trip.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -235,6 +398,18 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
                   Add Trip
                 </Button>
               </div>
+            </div>
+          )}
+
+          {trips.length > 0 && filteredAndSortedTrips.length === 0 && (
+            <div className="bg-card border-border rounded-xl border p-12 text-center">
+              <Search className="text-muted-foreground/30 mx-auto mb-4 h-12 w-12" />
+              <h3 className="mb-2 text-lg font-medium">No trips match your filters</h3>
+              <p className="text-muted-foreground mb-4">Try adjusting your search or filter criteria</p>
+              <Button variant="outline" onClick={clearFilters}>
+                <X className="mr-2 h-4 w-4" />
+                Clear Filters
+              </Button>
             </div>
           )}
         </div>
