@@ -235,10 +235,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
           </div>
 
           {/* Back Button */}
-          <Link
-            href="/"
-            className="glass hover:bg-secondary/50 absolute top-6 left-6 z-10 rounded-full p-3 transition-colors"
-          >
+          <Link href="/" className="glass hover:bg-secondary/50 z-10 rounded-full p-3 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </div>

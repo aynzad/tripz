@@ -64,7 +64,7 @@ export default async function TripDetailPage({ params }: { params: Params }) {
         {/* Back Button */}
         <Link
           href="/"
-          className="glass hover:bg-secondary/50 absolute top-6 left-6 z-10 rounded-full p-3 transition-colors"
+          className="glass hover:bg-secondary/50 absolute top-6 right-6 z-10 rounded-full p-3 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -114,7 +114,9 @@ export default async function TripDetailPage({ params }: { params: Params }) {
           <div className="bg-card border-border rounded-xl border p-6">
             <div className="text-muted-foreground mb-2 flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
-              <span className="text-sm">Total Expenses</span>
+              <span className="text-sm">
+                Total <span className="hidden md:inline">Expenses</span>
+              </span>
             </div>
             <p className="text-accent text-3xl font-bold">{formatCurrency(totalExpenses, 0)}</p>
           </div>

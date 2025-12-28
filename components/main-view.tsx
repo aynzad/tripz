@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import type { Trip } from '@/lib/types'
 import {
@@ -11,6 +11,8 @@ import {
 } from '@/lib/trips-utils'
 import TripSidebar from '@/components/sidebar/trip-sidebar'
 import FilterBar, { type FilterState } from '@/components/filters/filter-bar'
+import { Button } from '@/components/ui/button'
+import { PanelRightClose, PanelRightOpen } from 'lucide-react'
 
 // Dynamic import for the map to avoid SSR issues with Leaflet
 const TripMap = dynamic(() => import('@/components/map/trip-map'), {
@@ -31,6 +33,23 @@ interface MainViewProps {
 
 export default function MainView({ initialTrips }: MainViewProps) {
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(true)
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      if (mobile) {
+        setSidebarOpen(false)
+      }
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Calculate bounds for filters
   const bounds = useMemo(() => {
@@ -106,8 +125,19 @@ export default function MainView({ initialTrips }: MainViewProps) {
     })
   }, [initialTrips, filters])
 
-  const handleTripSelect = useCallback((tripId: string | null) => {
-    setSelectedTripId(tripId)
+  const handleTripSelect = useCallback(
+    (tripId: string | null) => {
+      setSelectedTripId(tripId)
+      // On mobile, close sidebar after selecting a trip
+      if (isMobile) {
+        setSidebarOpen(false)
+      }
+    },
+    [isMobile],
+  )
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev)
   }, [])
 
   return (
@@ -126,11 +156,35 @@ export default function MainView({ initialTrips }: MainViewProps) {
           expenseBounds={bounds.expense}
           expensePerNightBounds={bounds.perNight}
           dateBounds={bounds.date}
+          sidebarOpen={sidebarOpen}
         />
+
+        {/* Sidebar Toggle Button */}
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={toggleSidebar}
+          className="glass absolute top-4 right-4 z-1000 h-10 w-10 shadow-lg"
+          aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        >
+          {sidebarOpen ? <PanelRightClose className="h-5 w-5" /> : <PanelRightOpen className="h-5 w-5" />}
+        </Button>
       </div>
 
       {/* Right Sidebar */}
-      <TripSidebar trips={filteredTrips} selectedTripId={selectedTripId} onTripSelect={handleTripSelect} />
+      <TripSidebar
+        trips={filteredTrips}
+        selectedTripId={selectedTripId}
+        onTripSelect={handleTripSelect}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isMobile={isMobile}
+      />
+
+      {/* Mobile overlay backdrop */}
+      {isMobile && sidebarOpen && (
+        <div className="fixed inset-0 z-999 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+      )}
     </div>
   )
 }

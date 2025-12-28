@@ -36,11 +36,11 @@ export default function ExpenseBreakdown({ expenses, nights }: ExpenseBreakdownP
       <div className="border-border border-b p-6">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-muted-foreground">Total Expenses</span>
-          <span className="text-accent text-3xl font-bold">{formatCurrency(total, 2)}</span>
+          <span className="text-accent text-2xl font-bold md:text-3xl">{formatCurrency(total, 2)}</span>
         </div>
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Per Night Average</span>
-          <span className="font-medium">{formatCurrency(total / nights, 2)}</span>
+          <span className="text-xs font-medium md:text-sm">{formatCurrency(total / nights, 2)}</span>
         </div>
       </div>
 
@@ -64,11 +64,11 @@ export default function ExpenseBreakdown({ expenses, nights }: ExpenseBreakdownP
                   >
                     <Icon className="h-4 w-4" style={{ color }} />
                   </div>
-                  <span className="font-medium">{label}</span>
+                  <span className="text-xs font-medium md:text-sm">{label}</span>
                 </div>
                 <div className="text-right">
-                  <span className="font-semibold">{formatCurrency(value, 2)}</span>
-                  <span className="text-muted-foreground ml-2 text-sm">({percentage.toFixed(0)}%)</span>
+                  <span className="text-xs font-semibold md:text-sm">{formatCurrency(value, 2)}</span>
+                  <span className="text-muted-foreground ml-2 text-xs md:text-sm">({percentage.toFixed(0)}%)</span>
                 </div>
               </div>
               <div className="bg-secondary h-2 overflow-hidden rounded-full">
