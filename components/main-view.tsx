@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import { useState, useMemo, useCallback } from "react"
-import dynamic from "next/dynamic"
-import type { Trip } from "@/lib/types"
-import { calculateTotalExpenses, calculateExpensesPerNight, getUniqueCompanions, getUniqueCountries } from "@/lib/trips"
-import TripSidebar from "@/components/sidebar/trip-sidebar"
-import FilterBar, { type FilterState } from "@/components/filters/filter-bar"
+import { useState, useMemo, useCallback } from 'react'
+import dynamic from 'next/dynamic'
+import type { Trip } from '@/lib/types'
+import { calculateTotalExpenses, calculateExpensesPerNight, getUniqueCompanions, getUniqueCountries } from '@/lib/trips'
+import TripSidebar from '@/components/sidebar/trip-sidebar'
+import FilterBar, { type FilterState } from '@/components/filters/filter-bar'
 
 // Dynamic import for the map to avoid SSR issues with Leaflet
-const TripMap = dynamic(() => import("@/components/map/trip-map"), {
+const TripMap = dynamic(() => import('@/components/map/trip-map'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full bg-background flex items-center justify-center">
+    <div className="bg-background flex h-full w-full items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="border-primary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
         <p className="text-muted-foreground">Loading map...</p>
       </div>
     </div>
@@ -106,9 +106,9 @@ export default function MainView({ initialTrips }: MainViewProps) {
   }, [])
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden bg-background">
+    <div className="bg-background flex h-screen w-screen overflow-hidden">
       {/* Main Map Section */}
-      <div className="flex-1 relative">
+      <div className="relative flex-1">
         <TripMap trips={filteredTrips} selectedTripId={selectedTripId} onTripSelect={handleTripSelect} />
 
         {/* Filter Bar */}

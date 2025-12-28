@@ -1,16 +1,16 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import type { Trip, TripInput, TransportationType, Expenses } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { X, Plus, Trash2, GripVertical, Loader2 } from "lucide-react"
-import { createTrip, updateTrip } from "@/app/admin/actions"
+import { useState } from 'react'
+import type { Trip, TripInput, TransportationType, Expenses } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { X, Plus, Trash2, GripVertical, Loader2 } from 'lucide-react'
+import { createTrip, updateTrip } from '@/app/admin/actions'
 
 interface TripFormProps {
   trip: Trip | null
@@ -28,11 +28,11 @@ interface DestinationInput {
 
 export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [name, setName] = useState(trip?.name || "")
-  const [description, setDescription] = useState(trip?.description || "")
-  const [startDate, setStartDate] = useState(trip ? new Date(trip.startDate).toISOString().split("T")[0] : "")
-  const [endDate, setEndDate] = useState(trip ? new Date(trip.endDate).toISOString().split("T")[0] : "")
-  const [companions, setCompanions] = useState(trip?.companions.join(", ") || "")
+  const [name, setName] = useState(trip?.name || '')
+  const [description, setDescription] = useState(trip?.description || '')
+  const [startDate, setStartDate] = useState(trip ? new Date(trip.startDate).toISOString().split('T')[0] : '')
+  const [endDate, setEndDate] = useState(trip ? new Date(trip.endDate).toISOString().split('T')[0] : '')
+  const [companions, setCompanions] = useState(trip?.companions.join(', ') || '')
   const [destinations, setDestinations] = useState<DestinationInput[]>(
     trip?.destinations.map((d) => ({
       city: d.city,
@@ -40,7 +40,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
       latitude: d.latitude.toString(),
       longitude: d.longitude.toString(),
       transportationType: d.transportationType,
-    })) || [{ city: "", country: "", latitude: "", longitude: "", transportationType: null }],
+    })) || [{ city: '', country: '', latitude: '', longitude: '', transportationType: null }],
   )
   const [expenses, setExpenses] = useState<Expenses>(
     trip?.expenses || {
@@ -53,7 +53,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
   )
 
   const addDestination = () => {
-    setDestinations([...destinations, { city: "", country: "", latitude: "", longitude: "", transportationType: null }])
+    setDestinations([...destinations, { city: '', country: '', latitude: '', longitude: '', transportationType: null }])
   }
 
   const removeDestination = (index: number) => {
@@ -87,7 +87,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
           transportationType: d.transportationType || null,
         })),
         companions: companions
-          .split(",")
+          .split(',')
           .map((c) => c.trim())
           .filter(Boolean),
         expenses,
@@ -102,20 +102,20 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
 
       onSave(savedTrip)
     } catch {
-      console.error("Failed to save trip")
+      console.error('Failed to save trip')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-card rounded-2xl border border-border w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className="bg-card border-border flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border">
         {/* Header */}
-        <div className="p-6 border-b border-border flex items-center justify-between">
-          <h2 className="text-xl font-semibold">{trip ? "Edit Trip" : "Add New Trip"}</h2>
+        <div className="border-border flex items-center justify-between border-b p-6">
+          <h2 className="text-xl font-semibold">{trip ? 'Edit Trip' : 'Add New Trip'}</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </Button>
         </div>
 
@@ -175,19 +175,19 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
 
             {/* Destinations */}
             <div>
-              <div className="flex items-center justify-between mb-3">
+              <div className="mb-3 flex items-center justify-between">
                 <Label>Destinations</Label>
                 <Button type="button" variant="outline" size="sm" onClick={addDestination}>
-                  <Plus className="w-4 h-4 mr-1" />
+                  <Plus className="mr-1 h-4 w-4" />
                   Add Stop
                 </Button>
               </div>
 
               <div className="space-y-3">
                 {destinations.map((dest, index) => (
-                  <div key={index} className="bg-secondary/30 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
+                  <div key={index} className="bg-secondary/30 space-y-3 rounded-lg p-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <GripVertical className="text-muted-foreground h-4 w-4" />
                       <span className="text-sm font-medium">Stop {index + 1}</span>
                       {destinations.length > 1 && (
                         <Button
@@ -197,7 +197,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                           className="ml-auto h-8 w-8"
                           onClick={() => removeDestination(index)}
                         >
-                          <Trash2 className="w-4 h-4 text-destructive" />
+                          <Trash2 className="text-destructive h-4 w-4" />
                         </Button>
                       )}
                     </div>
@@ -206,13 +206,13 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                       <Input
                         placeholder="City"
                         value={dest.city}
-                        onChange={(e) => updateDestination(index, "city", e.target.value)}
+                        onChange={(e) => updateDestination(index, 'city', e.target.value)}
                         required
                       />
                       <Input
                         placeholder="Country"
                         value={dest.country}
-                        onChange={(e) => updateDestination(index, "country", e.target.value)}
+                        onChange={(e) => updateDestination(index, 'country', e.target.value)}
                         required
                       />
                       <Input
@@ -220,7 +220,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                         type="number"
                         step="any"
                         value={dest.latitude}
-                        onChange={(e) => updateDestination(index, "latitude", e.target.value)}
+                        onChange={(e) => updateDestination(index, 'latitude', e.target.value)}
                         required
                       />
                       <Input
@@ -228,14 +228,14 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                         type="number"
                         step="any"
                         value={dest.longitude}
-                        onChange={(e) => updateDestination(index, "longitude", e.target.value)}
+                        onChange={(e) => updateDestination(index, 'longitude', e.target.value)}
                         required
                       />
                       <div className="col-span-2">
                         <Select
-                          value={dest.transportationType || "none"}
+                          value={dest.transportationType || 'none'}
                           onValueChange={(value) =>
-                            updateDestination(index, "transportationType", value === "none" ? "" : value)
+                            updateDestination(index, 'transportationType', value === 'none' ? '' : value)
                           }
                         >
                           <SelectTrigger>
@@ -260,9 +260,9 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
             {/* Expenses */}
             <div>
               <Label className="mb-3 block">Expenses (€)</Label>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Hotel</Label>
+                  <Label className="text-muted-foreground text-xs">Hotel</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -271,7 +271,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Food</Label>
+                  <Label className="text-muted-foreground text-xs">Food</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -280,7 +280,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Transportation</Label>
+                  <Label className="text-muted-foreground text-xs">Transportation</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -294,7 +294,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Entry Fees</Label>
+                  <Label className="text-muted-foreground text-xs">Entry Fees</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -308,7 +308,7 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Other</Label>
+                  <Label className="text-muted-foreground text-xs">Other</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -322,13 +322,13 @@ export default function TripForm({ trip, onClose, onSave }: TripFormProps) {
         </form>
 
         {/* Footer */}
-        <div className="p-6 border-t border-border flex justify-end gap-3">
+        <div className="border-border flex justify-end gap-3 border-t p-6">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {trip ? "Save Changes" : "Create Trip"}
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {trip ? 'Save Changes' : 'Create Trip'}
           </Button>
         </div>
       </div>

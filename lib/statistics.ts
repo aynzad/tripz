@@ -1,6 +1,6 @@
-import type { Trip } from "./types"
-import { calculateTotalExpenses, calculateExpensesPerNight } from "./trips"
-import { getDestinationsExcludingHome } from "./utils"
+import type { Trip } from './types'
+import { calculateTotalExpenses, calculateExpensesPerNight } from './trips'
+import { getDestinationsExcludingHome } from './utils'
 
 export interface TripStatistics {
   mostExpensiveTrip: Trip | null
@@ -45,11 +45,7 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
 
   let maxTotal = calculateTotalExpenses(trips[0].expenses)
   let minTotal = calculateTotalExpenses(trips[0].expenses)
-  let maxPerNight = calculateExpensesPerNight(
-    trips[0].expenses,
-    trips[0].startDate,
-    trips[0].endDate
-  )
+  let maxPerNight = calculateExpensesPerNight(trips[0].expenses, trips[0].startDate, trips[0].endDate)
   let minPerNight = maxPerNight
 
   // Longest/Shortest trips
@@ -60,7 +56,7 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
 
   // Companions
   const companionCounts = new Map<string, number>()
-  
+
   // Cities and Countries
   const cityCounts = new Map<string, { city: string; country: string; count: number }>()
   const countryCounts = new Map<string, number>()
@@ -115,7 +111,7 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
     const destinationsExcludingHome = getDestinationsExcludingHome(trip.destinations)
     const uniqueCities = new Set<string>()
     const uniqueCountries = new Set<string>()
-    
+
     destinationsExcludingHome.forEach((dest) => {
       const cityKey = `${dest.city}-${dest.country}`
       if (!uniqueCities.has(cityKey)) {
@@ -124,7 +120,7 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
         existing.count++
         cityCounts.set(cityKey, existing)
       }
-      
+
       if (!uniqueCountries.has(dest.country)) {
         uniqueCountries.add(dest.country)
         countryCounts.set(dest.country, (countryCounts.get(dest.country) || 0) + 1)
@@ -138,8 +134,7 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
     .sort((a, b) => b.count - a.count)
 
   // Sort cities by count
-  const mostVisitedCities = Array.from(cityCounts.values())
-    .sort((a, b) => b.count - a.count)
+  const mostVisitedCities = Array.from(cityCounts.values()).sort((a, b) => b.count - a.count)
 
   // Sort countries by count
   const mostVisitedCountries = Array.from(countryCounts.entries())
@@ -162,4 +157,3 @@ export function calculateStatistics(trips: Trip[]): TripStatistics {
     averagePerNight: totalPerNight / trips.length,
   }
 }
-

@@ -1,4 +1,4 @@
-export type TransportationType = "car" | "plane" | "train" | "bus" | "boat" | null
+export type TransportationType = 'car' | 'plane' | 'train' | 'bus' | 'boat' | null
 
 export type Expenses = {
   hotel: number
@@ -47,18 +47,18 @@ export type TripInput = {
 }
 
 export const TRANSPORTATION_COLORS: Record<string, string> = {
-  plane: "#3b82f6", // blue
-  train: "#22c55e", // green
-  car: "#f59e0b", // amber
-  bus: "#8b5cf6", // purple
-  boat: "#06b6d4", // cyan
-  default: "#6b7280", // gray
+  plane: '#3b82f6', // blue
+  train: '#22c55e', // green
+  car: '#f59e0b', // amber
+  bus: '#8b5cf6', // purple
+  boat: '#06b6d4', // cyan
+  default: '#6b7280', // gray
 }
 
 export const TRANSPORTATION_ICONS: Record<string, string> = {
-  plane: "✈️",
-  train: "🚄",
-  car: "🚗",
-  bus: "🚌",
-  boat: "⛵",
+  plane: '✈️',
+  train: '🚄',
+  car: '🚗',
+  bus: '🚌',
+  boat: '⛵',
 }

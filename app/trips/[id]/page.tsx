@@ -1,165 +1,109 @@
-import {
-  getTripById,
-  getAllTrips,
-  calculateTotalExpenses,
-  calculateExpensesPerNight,
-} from "@/lib/trips";
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import pluralize from "pluralize";
-import {
-  ArrowLeft,
-  Calendar,
-  Users,
-  MapPin,
-  DollarSign,
-  Moon,
-  Globe,
-} from "lucide-react";
-import TripDetailMap from "@/components/trip-detail/trip-detail-map";
-import ExpenseBreakdown from "@/components/trip-detail/expense-breakdown";
-import RouteTimeline from "@/components/trip-detail/route-timeline";
-import {
-  getCityImagePath,
-  formatDate,
-  getDestinationsExcludingHome,
-  formatCurrency,
-} from "@/lib/utils";
+import { getTripById, getAllTrips, calculateTotalExpenses, calculateExpensesPerNight } from '@/lib/trips'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import Image from 'next/image'
+import pluralize from 'pluralize'
+import { ArrowLeft, Calendar, Users, MapPin, DollarSign, Moon, Globe } from 'lucide-react'
+import TripDetailMap from '@/components/trip-detail/trip-detail-map'
+import ExpenseBreakdown from '@/components/trip-detail/expense-breakdown'
+import RouteTimeline from '@/components/trip-detail/route-timeline'
+import { getCityImagePath, formatDate, getDestinationsExcludingHome, formatCurrency } from '@/lib/utils'
 
-type Params = Promise<{ id: string }>;
+type Params = Promise<{ id: string }>
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Params;
-}): Promise<Metadata> {
-  const { id } = await params;
-  const trip = await getTripById(id);
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { id } = await params
+  const trip = await getTripById(id)
 
   if (!trip) {
-    return { title: "Trip Not Found" };
+    return { title: 'Trip Not Found' }
   }
 
   return {
     title: `${trip.name} - TripViz`,
-    description:
-      trip.description ||
-      `Explore the ${trip.name} trip with interactive maps and expense tracking`,
-  };
+    description: trip.description || `Explore the ${trip.name} trip with interactive maps and expense tracking`,
+  }
 }
 
 export async function generateStaticParams() {
-  const trips = await getAllTrips();
-  return trips.map((trip) => ({ id: trip.id }));
+  const trips = await getAllTrips()
+  return trips.map((trip) => ({ id: trip.id }))
 }
 
 export default async function TripDetailPage({ params }: { params: Params }) {
-  const { id } = await params;
-  const trip = await getTripById(id);
+  const { id } = await params
+  const trip = await getTripById(id)
 
   if (!trip) {
-    notFound();
+    notFound()
   }
 
-  const totalExpenses = calculateTotalExpenses(trip.expenses);
-  const perNight = calculateExpensesPerNight(
-    trip.expenses,
-    trip.startDate,
-    trip.endDate
-  );
-  const nights = Math.max(
-    1,
-    Math.ceil(
-      (trip.endDate.getTime() - trip.startDate.getTime()) /
-        (1000 * 60 * 60 * 24)
-    )
-  );
+  const totalExpenses = calculateTotalExpenses(trip.expenses)
+  const perNight = calculateExpensesPerNight(trip.expenses, trip.startDate, trip.endDate)
+  const nights = Math.max(1, Math.ceil((trip.endDate.getTime() - trip.startDate.getTime()) / (1000 * 60 * 60 * 24)))
 
   // Filter out home city (first and last destination) from all calculations
-  const destinationsExcludingHome = getDestinationsExcludingHome(
-    trip.destinations
-  );
-  const mainCity =
-    destinationsExcludingHome[0]?.city || trip.destinations[0]?.city;
+  const destinationsExcludingHome = getDestinationsExcludingHome(trip.destinations)
+  const mainCity = destinationsExcludingHome[0]?.city || trip.destinations[0]?.city
 
   // Calculate unique destinations excluding home city
-  const uniqueDestinations = new Set(
-    destinationsExcludingHome.map((d) => d.city)
-  );
-  const uniqueDestinationCount = uniqueDestinations.size;
+  const uniqueDestinations = new Set(destinationsExcludingHome.map((d) => d.city))
+  const uniqueDestinationCount = uniqueDestinations.size
 
   // Calculate unique cities excluding home city
-  const uniqueCities = new Set(destinationsExcludingHome.map((d) => d.city));
-  const uniqueCityCount = uniqueCities.size;
+  const uniqueCities = new Set(destinationsExcludingHome.map((d) => d.city))
+  const uniqueCityCount = uniqueCities.size
 
   // Calculate unique countries excluding home city
-  const uniqueCountries = new Set(
-    destinationsExcludingHome.map((d) => d.country)
-  );
-  const uniqueCountryCount = uniqueCountries.size;
+  const uniqueCountries = new Set(destinationsExcludingHome.map((d) => d.country))
+  const uniqueCountryCount = uniqueCountries.size
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       {/* Hero Section */}
       <div className="relative h-[60vh] min-h-[400px] overflow-hidden">
-        <Image
-          src={getCityImagePath(mainCity)}
-          alt={trip.name}
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
+        <Image src={getCityImagePath(mainCity)} alt={trip.name} fill className="object-cover" sizes="100vw" priority />
+        <div className="from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent" />
 
         {/* Back Button */}
         <Link
           href="/"
-          className="absolute top-6 left-6 glass rounded-full p-3 hover:bg-secondary/50 transition-colors z-10"
+          className="glass hover:bg-secondary/50 absolute top-6 left-6 z-10 rounded-full p-3 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
         </Link>
 
         {/* Hero Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-              {trip.name}
-            </h1>
-            {trip.description && (
-              <p className="text-xl text-muted-foreground mb-6 max-w-2xl">
-                {trip.description}
-              </p>
-            )}
+        <div className="absolute right-0 bottom-0 left-0 p-8 md:p-12">
+          <div className="mx-auto max-w-4xl">
+            <h1 className="text-foreground mb-4 text-4xl font-bold md:text-6xl">{trip.name}</h1>
+            {trip.description && <p className="text-muted-foreground mb-6 max-w-2xl text-xl">{trip.description}</p>}
 
             <div className="flex flex-wrap gap-4 text-sm">
-              <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
+              <div className="glass flex items-center gap-2 rounded-full px-4 py-2">
+                <Calendar className="text-primary h-4 w-4" />
                 <span>
                   {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                 </span>
               </div>
-              <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                <Moon className="w-4 h-4 text-primary" />
+              <div className="glass flex items-center gap-2 rounded-full px-4 py-2">
+                <Moon className="text-primary h-4 w-4" />
                 <span>
-                  {nights} {pluralize("night", nights)}
+                  {nights} {pluralize('night', nights)}
                 </span>
               </div>
-              <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary" />
+              <div className="glass flex items-center gap-2 rounded-full px-4 py-2">
+                <MapPin className="text-primary h-4 w-4" />
                 <span>
-                  {uniqueDestinationCount}{" "}
-                  {pluralize("destination", uniqueDestinationCount)}
+                  {uniqueDestinationCount} {pluralize('destination', uniqueDestinationCount)}
                 </span>
               </div>
               {trip.companions.length > 0 && (
-                <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-primary" />
+                <div className="glass flex items-center gap-2 rounded-full px-4 py-2">
+                  <Users className="text-primary h-4 w-4" />
                   <span>
-                    {trip.companions.length}{" "}
-                    {pluralize("companion", trip.companions.length)}
+                    {trip.companions.length} {pluralize('companion', trip.companions.length)}
                   </span>
                 </div>
               )}
@@ -169,79 +113,67 @@ export default async function TripDetailPage({ params }: { params: Params }) {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="mx-auto max-w-6xl px-6 py-12">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
-          <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <DollarSign className="w-4 h-4" />
+        <div className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-5">
+          <div className="bg-card border-border rounded-xl border p-6">
+            <div className="text-muted-foreground mb-2 flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
               <span className="text-sm">Total Expenses</span>
             </div>
-            <p className="text-3xl font-bold text-accent">
-              {formatCurrency(totalExpenses, 0)}
-            </p>
+            <p className="text-accent text-3xl font-bold">{formatCurrency(totalExpenses, 0)}</p>
           </div>
-          <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Moon className="w-4 h-4" />
+          <div className="bg-card border-border rounded-xl border p-6">
+            <div className="text-muted-foreground mb-2 flex items-center gap-2">
+              <Moon className="h-4 w-4" />
               <span className="text-sm">Per Night</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">
-              {formatCurrency(perNight, 0)}
-            </p>
+            <p className="text-foreground text-3xl font-bold">{formatCurrency(perNight, 0)}</p>
           </div>
-          <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <MapPin className="w-4 h-4" />
-              <span className="text-sm">
-                {pluralize("City", uniqueCityCount)}
-              </span>
+          <div className="bg-card border-border rounded-xl border p-6">
+            <div className="text-muted-foreground mb-2 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              <span className="text-sm">{pluralize('City', uniqueCityCount)}</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">
-              {uniqueCityCount}
-            </p>
+            <p className="text-foreground text-3xl font-bold">{uniqueCityCount}</p>
           </div>
-          <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Globe className="w-4 h-4" />
-              <span className="text-sm">
-                {pluralize("Country", uniqueCountryCount)}
-              </span>
+          <div className="bg-card border-border rounded-xl border p-6">
+            <div className="text-muted-foreground mb-2 flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              <span className="text-sm">{pluralize('Country', uniqueCountryCount)}</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">
-              {uniqueCountryCount}
-            </p>
+            <p className="text-foreground text-3xl font-bold">{uniqueCountryCount}</p>
           </div>
-          <div className="bg-card rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Calendar className="w-4 h-4" />
+          <div className="bg-card border-border rounded-xl border p-6">
+            <div className="text-muted-foreground mb-2 flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
               <span className="text-sm">Duration</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">
-              {nights + 1} {pluralize("day", nights + 1)}
+            <p className="text-foreground text-3xl font-bold">
+              {nights + 1} {pluralize('day', nights + 1)}
             </p>
           </div>
         </div>
 
         {/* Map Section */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6">Route Map</h2>
-          <div className="bg-card rounded-2xl overflow-hidden border border-border h-[400px]">
+          <h2 className="mb-6 text-2xl font-semibold">Route Map</h2>
+          <div className="bg-card border-border h-[400px] overflow-hidden rounded-2xl border">
             <TripDetailMap trip={trip} />
           </div>
         </section>
 
         {/* Two Column Layout */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid gap-8 md:grid-cols-2">
           {/* Route Timeline */}
           <section>
-            <h2 className="text-2xl font-semibold mb-6">Journey</h2>
+            <h2 className="mb-6 text-2xl font-semibold">Journey</h2>
             <RouteTimeline destinations={trip.destinations} />
           </section>
 
           {/* Expense Breakdown */}
           <section>
-            <h2 className="text-2xl font-semibold mb-6">Expenses</h2>
+            <h2 className="mb-6 text-2xl font-semibold">Expenses</h2>
             <ExpenseBreakdown expenses={trip.expenses} nights={nights} />
           </section>
         </div>
@@ -249,23 +181,19 @@ export default async function TripDetailPage({ params }: { params: Params }) {
         {/* Companions Section */}
         {trip.companions.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-2xl font-semibold mb-6">Travel Companions</h2>
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="mb-6 text-2xl font-semibold">Travel Companions</h2>
+            <div className="bg-card border-border rounded-2xl border p-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {trip.companions.map((companion) => (
                   <div
                     key={companion}
-                    className="flex items-center gap-3 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors border border-border/50"
+                    className="bg-secondary/30 hover:bg-secondary/50 border-border/50 flex items-center gap-3 rounded-xl border p-4 transition-colors"
                   >
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                      <span className="text-primary font-semibold text-lg">
-                        {companion[0].toUpperCase()}
-                      </span>
+                    <div className="bg-primary/20 flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
+                      <span className="text-primary text-lg font-semibold">{companion[0].toUpperCase()}</span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="font-medium text-foreground block truncate">
-                        {companion}
-                      </span>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-foreground block truncate font-medium">{companion}</span>
                     </div>
                   </div>
                 ))}
@@ -275,5 +203,5 @@ export default async function TripDetailPage({ params }: { params: Params }) {
         )}
       </div>
     </div>
-  );
+  )
 }

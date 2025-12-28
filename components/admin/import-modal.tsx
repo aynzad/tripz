@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useCallback } from "react"
-import type { Trip, TripInput } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { X, Upload, FileJson, AlertCircle, CheckCircle, Loader2 } from "lucide-react"
-import { importTrips } from "@/app/admin/actions"
-import pluralize from "pluralize"
+import { useState, useCallback } from 'react'
+import type { Trip, TripInput } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import { X, Upload, FileJson, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { importTrips } from '@/app/admin/actions'
+import pluralize from 'pluralize'
 
 interface ImportModalProps {
   onClose: () => void
@@ -37,7 +37,7 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
       const data = JSON.parse(text)
 
       if (!Array.isArray(data)) {
-        throw new Error("JSON must be an array of trips")
+        throw new Error('JSON must be an array of trips')
       }
 
       for (let i = 0; i < data.length; i++) {
@@ -53,7 +53,7 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
       setJsonContent(data)
       setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid JSON file")
+      setError(err instanceof Error ? err.message : 'Invalid JSON file')
       setJsonContent(null)
     }
   }
@@ -63,11 +63,11 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
     setIsDragging(false)
 
     const droppedFile = e.dataTransfer.files[0]
-    if (droppedFile && droppedFile.type === "application/json") {
+    if (droppedFile && droppedFile.type === 'application/json') {
       setFile(droppedFile)
       validateAndParseJson(droppedFile)
     } else {
-      setError("Please drop a valid JSON file")
+      setError('Please drop a valid JSON file')
     }
   }, [])
 
@@ -87,20 +87,20 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
       const imported = await importTrips(jsonContent)
       onImportComplete(imported)
     } catch {
-      setError("Failed to import trips")
+      setError('Failed to import trips')
     } finally {
       setIsImporting(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-card rounded-2xl border border-border w-full max-w-lg">
+    <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className="bg-card border-border w-full max-w-lg rounded-2xl border">
         {/* Header */}
-        <div className="p-6 border-b border-border flex items-center justify-between">
+        <div className="border-border flex items-center justify-between border-b p-6">
           <h2 className="text-xl font-semibold">Import Trips</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </Button>
         </div>
 
@@ -111,50 +111,47 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`
-              border-2 border-dashed rounded-xl p-8 text-center transition-colors
-              ${isDragging ? "border-primary bg-primary/10" : "border-border"}
-              ${file && !error ? "border-green-500 bg-green-500/10" : ""}
-              ${error ? "border-destructive bg-destructive/10" : ""}
-            `}
+            className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-border'} ${file && !error ? 'border-green-500 bg-green-500/10' : ''} ${error ? 'border-destructive bg-destructive/10' : ''} `}
           >
             {file && !error ? (
               <div className="flex flex-col items-center gap-3">
-                <CheckCircle className="w-12 h-12 text-green-500" />
+                <CheckCircle className="h-12 w-12 text-green-500" />
                 <div>
                   <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-muted-foreground">{jsonContent?.length || 0} {pluralize("trip", jsonContent?.length || 0)} ready to import</p>
+                  <p className="text-muted-foreground text-sm">
+                    {jsonContent?.length || 0} {pluralize('trip', jsonContent?.length || 0)} ready to import
+                  </p>
                 </div>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center gap-3">
-                <AlertCircle className="w-12 h-12 text-destructive" />
+                <AlertCircle className="text-destructive h-12 w-12" />
                 <div>
-                  <p className="font-medium text-destructive">Validation Error</p>
-                  <p className="text-sm text-muted-foreground">{error}</p>
+                  <p className="text-destructive font-medium">Validation Error</p>
+                  <p className="text-muted-foreground text-sm">{error}</p>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-3">
-                <FileJson className="w-12 h-12 text-muted-foreground" />
+                <FileJson className="text-muted-foreground h-12 w-12" />
                 <div>
                   <p className="font-medium">Drop your JSON file here</p>
-                  <p className="text-sm text-muted-foreground">or click to browse</p>
+                  <p className="text-muted-foreground text-sm">or click to browse</p>
                 </div>
                 <input
                   type="file"
                   accept=".json,application/json"
                   onChange={handleFileSelect}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  className="absolute inset-0 cursor-pointer opacity-0"
                 />
               </div>
             )}
           </div>
 
           {/* Format Info */}
-          <div className="mt-4 p-4 bg-secondary/30 rounded-lg text-sm text-muted-foreground">
-            <p className="font-medium text-foreground mb-2">Expected format:</p>
-            <pre className="text-xs overflow-x-auto">
+          <div className="bg-secondary/30 text-muted-foreground mt-4 rounded-lg p-4 text-sm">
+            <p className="text-foreground mb-2 font-medium">Expected format:</p>
+            <pre className="overflow-x-auto text-xs">
               {`[{
   "id": "trip-1",
   "name": "Trip Name",
@@ -169,13 +166,13 @@ export default function ImportModal({ onClose, onImportComplete }: ImportModalPr
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-border flex justify-end gap-3">
+        <div className="border-border flex justify-end gap-3 border-t p-6">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button onClick={handleImport} disabled={!jsonContent || isImporting}>
-            {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
-            Import {jsonContent?.length || 0} {pluralize("Trip", jsonContent?.length || 0)}
+            {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+            Import {jsonContent?.length || 0} {pluralize('Trip', jsonContent?.length || 0)}
           </Button>
         </div>
       </div>

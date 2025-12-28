@@ -1,6 +1,6 @@
-import { getAllTrips } from "@/lib/trips"
-import { calculateStatistics } from "@/lib/statistics"
-import SummaryPageClient from "@/components/summary/summary-page-client"
+import { getAllTrips } from '@/lib/trips'
+import { calculateStatistics } from '@/lib/statistics'
+import SummaryPageClient from '@/components/summary/summary-page-client'
 
 export default async function SummaryPage() {
   const trips = await getAllTrips()
@@ -8,4 +8,3 @@ export default async function SummaryPage() {
 
   return <SummaryPageClient statistics={statistics} trips={trips} />
 }
-

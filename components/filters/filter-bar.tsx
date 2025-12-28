@@ -1,46 +1,32 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import {
-  type Trip,
-  TRANSPORTATION_COLORS,
-  TRANSPORTATION_ICONS,
-} from "@/lib/types";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Filter,
-  Calendar,
-  Car,
-  Users,
-  Globe,
-  DollarSign,
-  RotateCcw,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { formatDate, formatCurrency } from "@/lib/utils";
+import { useState, useMemo } from 'react'
+import { type Trip, TRANSPORTATION_COLORS, TRANSPORTATION_ICONS } from '@/lib/types'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Filter, Calendar, Car, Users, Globe, DollarSign, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Slider } from '@/components/ui/slider'
+import { Badge } from '@/components/ui/badge'
+import { formatDate, formatCurrency } from '@/lib/utils'
 
 export interface FilterState {
-  dateRange: [number, number];
-  transportationTypes: string[];
-  companions: string[];
-  countries: string[];
-  expenseRange: [number, number];
-  expensePerNightRange: [number, number];
+  dateRange: [number, number]
+  transportationTypes: string[]
+  companions: string[]
+  countries: string[]
+  expenseRange: [number, number]
+  expensePerNightRange: [number, number]
 }
 
 interface FilterBarProps {
-  trips: Trip[];
-  filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
-  allCompanions: string[];
-  allCountries: string[];
-  expenseBounds: [number, number];
-  expensePerNightBounds: [number, number];
-  dateBounds: [number, number];
+  trips: Trip[]
+  filters: FilterState
+  onFiltersChange: (filters: FilterState) => void
+  allCompanions: string[]
+  allCountries: string[]
+  expenseBounds: [number, number]
+  expensePerNightBounds: [number, number]
+  dateBounds: [number, number]
 }
 
 export default function FilterBar({
@@ -52,9 +38,9 @@ export default function FilterBar({
   expensePerNightBounds,
   dateBounds,
 }: FilterBarProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false)
 
-  const transportationTypes = ["plane", "train", "car", "bus", "boat"];
+  const transportationTypes = ['plane', 'train', 'car', 'bus', 'boat']
 
   const hasActiveFilters = useMemo(() => {
     return (
@@ -67,8 +53,8 @@ export default function FilterBar({
       filters.expenseRange[1] !== expenseBounds[1] ||
       filters.expensePerNightRange[0] !== expensePerNightBounds[0] ||
       filters.expensePerNightRange[1] !== expensePerNightBounds[1]
-    );
-  }, [filters, dateBounds, expenseBounds, expensePerNightBounds]);
+    )
+  }, [filters, dateBounds, expenseBounds, expensePerNightBounds])
 
   const resetFilters = () => {
     onFiltersChange({
@@ -78,29 +64,29 @@ export default function FilterBar({
       countries: [],
       expenseRange: expenseBounds,
       expensePerNightRange: expensePerNightBounds,
-    });
-  };
+    })
+  }
 
   const toggleTransportation = (type: string) => {
     const newTypes = filters.transportationTypes.includes(type)
       ? filters.transportationTypes.filter((t) => t !== type)
-      : [...filters.transportationTypes, type];
-    onFiltersChange({ ...filters, transportationTypes: newTypes });
-  };
+      : [...filters.transportationTypes, type]
+    onFiltersChange({ ...filters, transportationTypes: newTypes })
+  }
 
   const toggleCompanion = (companion: string) => {
     const newCompanions = filters.companions.includes(companion)
       ? filters.companions.filter((c) => c !== companion)
-      : [...filters.companions, companion];
-    onFiltersChange({ ...filters, companions: newCompanions });
-  };
+      : [...filters.companions, companion]
+    onFiltersChange({ ...filters, companions: newCompanions })
+  }
 
   const toggleCountry = (country: string) => {
     const newCountries = filters.countries.includes(country)
       ? filters.countries.filter((c) => c !== country)
-      : [...filters.countries, country];
-    onFiltersChange({ ...filters, countries: newCountries });
-  };
+      : [...filters.countries, country]
+    onFiltersChange({ ...filters, countries: newCountries })
+  }
 
   return (
     <motion.div
@@ -108,14 +94,14 @@ export default function FilterBar({
       animate={{ y: 0, opacity: 1 }}
       className="absolute bottom-4 left-4 z-1000 w-[calc(60%-2rem)]"
     >
-      <div className="glass rounded-2xl shadow-2xl overflow-hidden">
+      <div className="glass overflow-hidden rounded-2xl shadow-2xl">
         {/* Header */}
         <div
-          className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-secondary/20 transition-colors"
+          className="hover:bg-secondary/20 flex cursor-pointer items-center justify-between px-4 py-3 transition-colors"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center gap-3">
-            <Filter className="w-5 h-5 text-primary" />
+            <Filter className="text-primary h-5 w-5" />
             <span className="font-medium">Filters</span>
             {hasActiveFilters && (
               <Badge variant="secondary" className="bg-primary/20 text-primary">
@@ -129,19 +115,19 @@ export default function FilterBar({
                 variant="ghost"
                 size="sm"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  resetFilters();
+                  e.stopPropagation()
+                  resetFilters()
                 }}
-                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground h-8 px-2"
               >
-                <RotateCcw className="w-4 h-4 mr-1" />
+                <RotateCcw className="mr-1 h-4 w-4" />
                 Reset
               </Button>
             )}
             {isExpanded ? (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              <ChevronDown className="text-muted-foreground h-5 w-5" />
             ) : (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
+              <ChevronUp className="text-muted-foreground h-5 w-5" />
             )}
           </div>
         </div>
@@ -151,20 +137,19 @@ export default function FilterBar({
           {isExpanded && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
+              animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="px-4 pb-4 space-y-4">
+              <div className="space-y-4 px-4 pb-4">
                 {/* Timeline Slider */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <Calendar className="h-4 w-4" />
                     <span>Timeline</span>
-                    <span className="ml-auto text-foreground">
-                      {formatDate(filters.dateRange[0])} -{" "}
-                      {formatDate(filters.dateRange[1])}
+                    <span className="text-foreground ml-auto">
+                      {formatDate(filters.dateRange[0])} - {formatDate(filters.dateRange[1])}
                     </span>
                   </div>
                   <Slider
@@ -184,8 +169,8 @@ export default function FilterBar({
 
                 {/* Transportation Types */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Car className="w-4 h-4" />
+                  <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                    <Car className="h-4 w-4" />
                     <span>Transportation</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -193,18 +178,14 @@ export default function FilterBar({
                       <button
                         key={type}
                         onClick={() => toggleTransportation(type)}
-                        className={`
-                          px-3 py-1.5 rounded-full text-sm font-medium transition-all
-                          flex items-center gap-1.5
-                          ${
-                            filters.transportationTypes.includes(type)
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-secondary/50 text-foreground hover:bg-secondary"
-                          }
-                        `}
+                        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+                          filters.transportationTypes.includes(type)
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary/50 text-foreground hover:bg-secondary'
+                        } `}
                       >
                         <div
-                          className="w-2 h-2 rounded-full"
+                          className="h-2 w-2 rounded-full"
                           style={{
                             backgroundColor: TRANSPORTATION_COLORS[type],
                           }}
@@ -219,8 +200,8 @@ export default function FilterBar({
                   {/* Companions */}
                   {allCompanions.length > 0 && (
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="w-4 h-4" />
+                      <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                        <Users className="h-4 w-4" />
                         <span>Companions</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -228,14 +209,11 @@ export default function FilterBar({
                           <button
                             key={companion}
                             onClick={() => toggleCompanion(companion)}
-                            className={`
-                              px-3 py-1.5 rounded-full text-sm font-medium transition-all
-                              ${
-                                filters.companions.includes(companion)
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-secondary/50 text-foreground hover:bg-secondary"
-                              }
-                            `}
+                            className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+                              filters.companions.includes(companion)
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-secondary/50 text-foreground hover:bg-secondary'
+                            } `}
                           >
                             {companion}
                           </button>
@@ -246,23 +224,20 @@ export default function FilterBar({
 
                   {/* Countries */}
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Globe className="w-4 h-4" />
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <Globe className="h-4 w-4" />
                       <span>Countries</span>
                     </div>
-                    <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                    <div className="flex max-h-20 flex-wrap gap-2 overflow-y-auto">
                       {allCountries.map((country) => (
                         <button
                           key={country}
                           onClick={() => toggleCountry(country)}
-                          className={`
-                            px-3 py-1.5 rounded-full text-sm font-medium transition-all
-                            ${
-                              filters.countries.includes(country)
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-secondary/50 text-foreground hover:bg-secondary"
-                            }
-                          `}
+                          className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+                            filters.countries.includes(country)
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-secondary/50 text-foreground hover:bg-secondary'
+                          } `}
                         >
                           {country}
                         </button>
@@ -274,12 +249,11 @@ export default function FilterBar({
                 {/* Expense Sliders */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <DollarSign className="w-4 h-4" />
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <DollarSign className="h-4 w-4" />
                       <span>Total Expenses</span>
-                      <span className="ml-auto text-foreground">
-                        {formatCurrency(filters.expenseRange[0], 0)} -{" "}
-                        {formatCurrency(filters.expenseRange[1], 0)}
+                      <span className="text-foreground ml-auto">
+                        {formatCurrency(filters.expenseRange[0], 0)} - {formatCurrency(filters.expenseRange[1], 0)}
                       </span>
                     </div>
                     <Slider
@@ -298,11 +272,11 @@ export default function FilterBar({
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <DollarSign className="w-4 h-4" />
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <DollarSign className="h-4 w-4" />
                       <span>Per Night</span>
-                      <span className="ml-auto text-foreground">
-                        {formatCurrency(filters.expensePerNightRange[0], 0)} -{" "}
+                      <span className="text-foreground ml-auto">
+                        {formatCurrency(filters.expensePerNightRange[0], 0)} -{' '}
                         {formatCurrency(filters.expensePerNightRange[1], 0)}
                       </span>
                     </div>
@@ -327,5 +301,5 @@ export default function FilterBar({
         </AnimatePresence>
       </div>
     </motion.div>
-  );
+  )
 }
