@@ -45,8 +45,8 @@ GOOGLE_CLIENT_SECRET="<your-google-client-secret>"
 ### 2. Build and run
 
 ```bash
-docker-compose build
-docker-compose up
+docker compose build
+docker compose up
 ```
 
 The app will be available at `http://localhost/` (or `http://trips.local/` if deployed on a Raspberry Pi with mDNS configured).
@@ -55,13 +55,13 @@ The app will be available at `http://localhost/` (or `http://trips.local/` if de
 
 ```bash
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop
-docker-compose down
+docker compose down
 
 # Restart
-docker-compose restart
+docker compose restart
 ```
 
 > **Note:** The SQLite database is persisted in a Docker volume (`tripz-data`). Your data will survive container restarts and rebuilds. See the [Data Persistence](#data-persistence) section below for details.
@@ -312,8 +312,8 @@ In this application:
 You can verify that your data persists across container restarts:
 
 1. Start the container and add some trips through the admin panel
-2. Stop and remove the container: `docker-compose down`
-3. Start a new container: `docker-compose up`
+2. Stop and remove the container: `docker compose down`
+3. Start a new container: `docker compose up`
 4. Your trips should still be there!
 
 ### Inspecting the Volume
@@ -352,8 +352,8 @@ Example output:
 # Method 1: Copy database from running container
 docker cp tripz:/app/data/tripz.db ./backup.db
 
-# Method 2: Using docker-compose exec (if container is running)
-docker-compose exec app cp /app/data/tripz.db /tmp/backup.db
+# Method 2: Using docker compose exec (if container is running)
+docker compose exec app cp /app/data/tripz.db /tmp/backup.db
 docker cp tripz:/tmp/backup.db ./backup.db
 
 # Method 3: Access volume directly (requires root)
@@ -367,12 +367,12 @@ To reset the database to its initial seeded state (created during build):
 
 ```bash
 # Method 1: If container is running
-docker-compose restart
+docker compose restart
 
 # Method 2: Stop, remove database, and restart
-docker-compose down
+docker compose down
 docker run --rm -v trip-visualization_tripz-data:/data alpine rm -f /data/tripz.db
-docker-compose up -d
+docker compose up -d
 ```
 
 > **Warning:** This will delete all your trip data. On the next container start, the seed database from the build will be copied to restore sample data.
@@ -383,13 +383,13 @@ To completely remove all persisted data:
 
 ```bash
 # Stop and remove containers
-docker-compose down
+docker compose down
 
 # Remove the volume (this deletes ALL data permanently)
 docker volume rm tripz_tripz-data
 
 # Start fresh
-docker-compose up
+docker compose up
 ```
 
 > **Warning:** This permanently deletes all your data. The volume will be recreated automatically when you start the container again.
@@ -400,13 +400,13 @@ If you encounter permission errors (e.g., "Permission denied" when creating the 
 
 ```bash
 # Stop the container
-docker-compose down
+docker compose down
 
 # Remove the volume to recreate it with correct permissions
 docker volume rm tripz_tripz-data
 
 # Start again - the volume will be recreated with proper permissions
-docker-compose up
+docker compose up
 ```
 
 The entrypoint script automatically fixes volume permissions on startup by running as root initially, then switching to the `nextjs` user (UID 1001) for running the application.
@@ -416,8 +416,8 @@ The entrypoint script automatically fixes volume permissions on startup by runni
 When you make code changes, rebuild the image:
 
 ```bash
-docker-compose build
-docker-compose up
+docker compose build
+docker compose up
 ```
 
 Your database data will persist through rebuilds because it's stored in a volume separate from the container image.
