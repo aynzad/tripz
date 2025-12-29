@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { loadEnvConfig } from '@next/env'
@@ -28,6 +29,40 @@ const tripsData = JSON.parse(readFileSync(seedDataPath, 'utf-8'))
 
 async function main() {
   console.log('Starting database seed...')
+
+  // Create or update admin user
+  const adminEmail = process.env.ADMIN_TEMP_EMAIL || 'admin@example.com'
+  const adminPassword = process.env.ADMIN_TEMP_PASSWORD || 'changeme'
+  
+  if (!adminPassword) {
+    throw new Error('ADMIN_TEMP_PASSWORD must be set in environment variables')
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 10)
+
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: adminEmail },
+  })
+
+  if (existingAdmin) {
+    await prisma.user.update({
+      where: { email: adminEmail },
+      data: {
+        password: hashedPassword,
+        name: 'Admin',
+      },
+    })
+    console.log(`Updated admin user: ${adminEmail}`)
+  } else {
+    await prisma.user.create({
+      data: {
+        email: adminEmail,
+        name: 'Admin',
+        password: hashedPassword,
+      },
+    })
+    console.log(`Created admin user: ${adminEmail}`)
+  }
 
   // Clear existing data
   console.log('Clearing existing trips and destinations...')

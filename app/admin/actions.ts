@@ -66,3 +66,41 @@ export async function importTrips(trips: TripInput[]): Promise<Trip[]> {
 
   return imported
 }
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const session = await requireAuth()
+
+  if (!session.user?.email) {
+    return { success: false, error: 'User not authenticated' }
+  }
+
+  const { prisma } = await import('@/lib/db')
+  const bcrypt = (await import('bcryptjs')).default
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!user || !user.password) {
+    return { success: false, error: 'User not found or password not set' }
+  }
+
+  const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password)
+
+  if (!isCurrentPasswordValid) {
+    return { success: false, error: 'Current password is incorrect' }
+  }
+
+  if (newPassword.length < 6) {
+    return { success: false, error: 'New password must be at least 6 characters long' }
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10)
+
+  await prisma.user.update({
+    where: { email: session.user.email },
+    data: { password: hashedNewPassword },
+  })
+
+  return { success: true }
+}

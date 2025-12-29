@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Search,
   X,
+  Lock,
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -183,6 +184,12 @@ export default function AdminDashboard({ user, initialTrips }: AdminDashboardPro
               )}
               <span className="text-sm">{user.name || user.email}</span>
             </div>
+            <Link href="/admin/change-password">
+              <Button variant="ghost" size="sm" className="text-muted-foreground">
+                <Lock className="mr-2 h-4 w-4" />
+                Change Password
+              </Button>
+            </Link>
             <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-muted-foreground">
               <LogOut className="mr-2 h-4 w-4" />
               Sign out

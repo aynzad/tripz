@@ -2,13 +2,19 @@
 
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/logo'
 
 export default function LoginPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (status === 'authenticated' && session) {
@@ -18,6 +24,31 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl: '/admin', redirect: true })
+  }
+
+  const handleCredentialsSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: '/admin',
+      })
+
+      if (result?.error) {
+        setError('Invalid username or password')
+      } else if (result?.ok) {
+        router.push('/admin')
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (status === 'loading') {
@@ -54,7 +85,51 @@ export default function LoginPage() {
           <h1 className="mb-2 text-center text-2xl font-semibold">Admin Access</h1>
           <p className="text-muted-foreground mb-8 text-center">Sign in to manage your trips</p>
 
-          <Button onClick={handleGoogleSignIn} className="h-12 w-full text-base" variant="outline">
+          <form onSubmit={handleCredentialsSignIn} className="mb-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                disabled={isLoading}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                disabled={isLoading}
+                className="h-12"
+              />
+            </div>
+            {error && (
+              <div className="text-destructive text-sm text-center">{error}</div>
+            )}
+            <Button type="submit" className="h-12 w-full text-base" disabled={isLoading}>
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </form>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="border-t-border w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card text-muted-foreground px-2">Or continue with</span>
+            </div>
+          </div>
+
+          <Button onClick={handleGoogleSignIn} className="h-12 w-full text-base" variant="outline" disabled={isLoading}>
             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -75,10 +150,6 @@ export default function LoginPage() {
             </svg>
             Sign in with Google
           </Button>
-
-          <p className="text-muted-foreground mt-6 text-center text-xs">
-            Only authorized Google accounts can access the admin panel.
-          </p>
         </div>
       </div>
     </div>
