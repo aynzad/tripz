@@ -141,7 +141,7 @@ export default function MainView({ initialTrips }: MainViewProps) {
   }, [])
 
   return (
-    <div className="bg-background flex h-screen-dynamic w-screen overflow-hidden">
+    <div className="bg-background h-screen-dynamic flex w-screen overflow-hidden">
       {/* Main Map Section */}
       <div className="relative flex-1">
         <TripMap trips={filteredTrips} selectedTripId={selectedTripId} onTripSelect={handleTripSelect} />

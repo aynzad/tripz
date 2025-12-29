@@ -147,6 +147,11 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [isLeftMouseDown, setIsLeftMouseDown] = useState(false)
   const [hasDragged, setHasDragged] = useState(false)
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number; touches: React.TouchList | null } | null>(null)
+  const [initialPinchDistance, setInitialPinchDistance] = useState<number | null>(null)
+  const [initialZoom, setInitialZoom] = useState<number | null>(null)
+  const [initialCenter, setInitialCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [pinchCenter, setPinchCenter] = useState<{ x: number; y: number } | null>(null)
   const [hoveredDestination, setHoveredDestination] = useState<{
     trip: Trip
     destination: Trip['destinations'][0]
@@ -154,28 +159,6 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
   } | null>(null)
 
   const tileSize = 256
-
-  useEffect(() => {
-    if (!containerRef.current) return
-
-    const updateSize = () => {
-      if (containerRef.current) {
-        setContainerSize({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        })
-      }
-    }
-
-    updateSize()
-    const resizeObserver = new ResizeObserver(updateSize)
-    resizeObserver.observe(containerRef.current)
-
-    return () => resizeObserver.disconnect()
-  }, [])
-
-  const mapWidth = containerSize.width
-  const mapHeight = containerSize.height
 
   // Calculate bounds from all destinations
   const bounds = useMemo(() => {
@@ -192,6 +175,40 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
       maxLng: Math.max(...lngs) + 2,
     }
   }, [trips])
+
+  // Handle zoom
+  const handleZoomIn = () => setZoom((z) => Math.min(z + 1, 12))
+  const handleZoomOut = () => setZoom((z) => Math.max(z - 1, 3))
+
+  const handleReset = useCallback(() => {
+    setZoom(DEFAULT_ZOOM)
+    const centerLat = (bounds.minLat + bounds.maxLat) / 2
+    const centerLng = (bounds.minLng + bounds.maxLng) / 2
+    setCenter({ lat: centerLat, lng: centerLng })
+  }, [bounds])
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const updateSize = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        })
+        handleReset()
+      }
+    }
+
+    updateSize()
+    const resizeObserver = new ResizeObserver(updateSize)
+    resizeObserver.observe(containerRef.current)
+
+    return () => resizeObserver.disconnect()
+  }, [handleReset])
+
+  const mapWidth = containerSize.width
+  const mapHeight = containerSize.height
 
   // Get center point from current view
   const centerPoint = useMemo(() => {
@@ -252,16 +269,6 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
 
     return tilesArray
   }, [zoom, center, centerPoint, mapWidth, mapHeight])
-
-  // Handle zoom
-  const handleZoomIn = () => setZoom((z) => Math.min(z + 1, 12))
-  const handleZoomOut = () => setZoom((z) => Math.max(z - 1, 3))
-  const handleReset = () => {
-    setZoom(DEFAULT_ZOOM)
-    const centerLat = (bounds.minLat + bounds.maxLat) / 2
-    const centerLng = (bounds.minLng + bounds.maxLng) / 2
-    setCenter({ lat: centerLat, lng: centerLng })
-  }
 
   // Handle pan with left mouse button
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -342,6 +349,153 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
 
       setZoom(newZoom)
       setCenter(newCenter)
+    }
+  }
+
+  // Calculate distance between two touches
+  const getTouchDistance = (touch1: React.Touch, touch2: React.Touch): number => {
+    const dx = touch2.clientX - touch1.clientX
+    const dy = touch2.clientY - touch1.clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
+  // Get center point between two touches
+  const getTouchCenter = (touch1: React.Touch, touch2: React.Touch): { x: number; y: number } => {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    }
+  }
+
+  // Handle touch start
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!containerRef.current) return
+
+    const target = e.target as HTMLElement
+    // Don't start panning if touching on a marker or button
+    if (
+      target.closest('[class*="pointer-events-auto"]') ||
+      target.closest('button') ||
+      target.closest('[role="button"]')
+    ) {
+      return
+    }
+
+    if (e.touches.length === 1) {
+      // Single touch - prepare for panning
+      const touch = e.touches[0]
+      setTouchStart({
+        x: touch.clientX,
+        y: touch.clientY,
+        touches: e.touches,
+      })
+      setInitialPinchDistance(null)
+      setInitialZoom(null)
+      setInitialCenter(null)
+      setPinchCenter(null)
+    } else if (e.touches.length === 2) {
+      // Two touches - prepare for pinch zoom
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const distance = getTouchDistance(touch1, touch2)
+      const touchCenterPoint = getTouchCenter(touch1, touch2)
+
+      const rect = containerRef.current.getBoundingClientRect()
+      const centerX = touchCenterPoint.x - rect.left
+      const centerY = touchCenterPoint.y - rect.top
+
+      setTouchStart(null)
+      setInitialPinchDistance(distance)
+      setInitialZoom(zoom)
+      setInitialCenter({ lat: center.lat, lng: center.lng })
+      setPinchCenter({ x: centerX, y: centerY })
+    }
+  }
+
+  // Handle touch move
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault()
+
+    if (!containerRef.current) return
+
+    if (e.touches.length === 1 && touchStart) {
+      // Single touch panning
+      const touch = e.touches[0]
+      const dx = touch.clientX - touchStart.x
+      const dy = touch.clientY - touchStart.y
+
+      // Only pan if moved more than 3 pixels
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        const newCenterX = centerPoint.x - dx
+        const newCenterY = centerPoint.y - dy
+
+        const newCenter = pointToLatLng(newCenterX, newCenterY, zoom, tileSize)
+        setCenter(newCenter)
+        setTouchStart({
+          x: touch.clientX,
+          y: touch.clientY,
+          touches: e.touches,
+        })
+      }
+    } else if (
+      e.touches.length === 2 &&
+      initialPinchDistance !== null &&
+      initialZoom !== null &&
+      initialCenter !== null &&
+      pinchCenter
+    ) {
+      // Two touches - pinch zoom
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const currentDistance = getTouchDistance(touch1, touch2)
+
+      // Calculate zoom based on distance change
+      const scale = currentDistance / initialPinchDistance
+      const zoomDelta = Math.log2(scale)
+      const newZoom = Math.max(3, Math.min(12, initialZoom + zoomDelta))
+
+      if (newZoom !== initialZoom) {
+        // Calculate the lat/lng under the pinch center using initial zoom and center
+        const initialCenterPoint = latLngToPoint(initialCenter.lat, initialCenter.lng, initialZoom, tileSize)
+        const mousePoint = {
+          x: pinchCenter.x - mapWidth / 2 + initialCenterPoint.x,
+          y: pinchCenter.y - mapHeight / 2 + initialCenterPoint.y,
+        }
+        const mouseLatLng = pointToLatLng(mousePoint.x, mousePoint.y, initialZoom, tileSize)
+
+        // Adjust center to keep the point under pinch center fixed
+        const newCenterPoint = latLngToPoint(mouseLatLng.lat, mouseLatLng.lng, newZoom, tileSize)
+        const newCenterX = newCenterPoint.x - (pinchCenter.x - mapWidth / 2)
+        const newCenterY = newCenterPoint.y - (pinchCenter.y - mapHeight / 2)
+        const newCenter = pointToLatLng(newCenterX, newCenterY, newZoom, tileSize)
+
+        setZoom(newZoom)
+        setCenter(newCenter)
+      }
+    }
+  }
+
+  // Handle touch end
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      // All touches ended
+      setTouchStart(null)
+      setInitialPinchDistance(null)
+      setInitialZoom(null)
+      setInitialCenter(null)
+      setPinchCenter(null)
+    } else if (e.touches.length === 1 && initialPinchDistance !== null) {
+      // Switched from two touches to one touch - reset to single touch panning
+      const touch = e.touches[0]
+      setTouchStart({
+        x: touch.clientX,
+        y: touch.clientY,
+        touches: e.touches,
+      })
+      setInitialPinchDistance(null)
+      setInitialZoom(null)
+      setInitialCenter(null)
+      setPinchCenter(null)
     }
   }
 
@@ -471,13 +625,17 @@ export default function TripMap({ trips, selectedTripId, onTripSelect }: TripMap
     <div ref={containerRef} className="bg-background relative h-full w-full overflow-hidden">
       {/* Map Container */}
       <div
-        className="relative h-full w-full"
+        className="relative h-full w-full touch-none"
         style={{ cursor: isLeftMouseDown ? 'grabbing' : 'grab' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
         onContextMenu={(e) => e.preventDefault()}
       >
         {/* Tile Layer */}
