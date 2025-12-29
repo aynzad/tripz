@@ -33,7 +33,7 @@ async function main() {
   // Create or update admin user
   const adminEmail = process.env.ADMIN_TEMP_EMAIL || 'admin@example.com'
   const adminPassword = process.env.ADMIN_TEMP_PASSWORD || 'changeme'
-  
+
   if (!adminPassword) {
     throw new Error('ADMIN_TEMP_PASSWORD must be set in environment variables')
   }

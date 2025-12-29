@@ -107,6 +107,8 @@ NEXTAUTH_URL="http://trips.local"
 NEXTAUTH_SECRET="<generate-with-openssl-rand-base64-32>"
 GOOGLE_CLIENT_ID="<your-google-client-id>"
 GOOGLE_CLIENT_SECRET="<your-google-client-secret>"
+ADMIN_TEMP_EMAIL="<your-admin-email>"
+ADMIN_TEMP_PASSWORD="<your-admin-password>"
 ```
 
 ### Step 3: Update Google OAuth

@@ -14,8 +14,8 @@ services:
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - ADMIN_TEMP_EMAIL=${ADMIN_TEMP_EMAIL:-alireza@esfahani.dev}
-      - ADMIN_TEMP_PASSWORD=${ADMIN_TEMP_PASSWORD:-admin}
+      - ADMIN_TEMP_EMAIL=${ADMIN_TEMP_EMAIL}
+      - ADMIN_TEMP_PASSWORD=${ADMIN_TEMP_PASSWORD}
     volumes:
       # Persist SQLite database using named volume
       # This ensures data persists across container restarts and rebuilds
