@@ -220,14 +220,14 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
   }
 
   return (
-    <div className="bg-background min-h-screen p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <div className="bg-background min-h-screen p-4 md:p-6">
+      <div className="mx-auto max-w-7xl space-y-4 md:space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight">Trip Statistics</h1>
+            <h1 className="text-2xl font-bold tracking-tight md:text-4xl">Trip Statistics</h1>
             {dateRange && (
-              <p className="text-muted-foreground mt-1 text-sm">
+              <p className="text-muted-foreground mt-1 text-xs md:text-sm">
                 {formatDate(dateRange.from)} {' - '}
                 {formatDate(dateRange.until)}
               </p>
@@ -235,8 +235,8 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
           </div>
 
           {/* Back Button */}
-          <Link href="/" className="glass hover:bg-secondary/50 z-10 rounded-full p-3 transition-colors">
-            <ArrowLeft className="h-5 w-5" />
+          <Link href="/" className="glass hover:bg-secondary/50 z-10 rounded-full p-2 transition-colors md:p-3">
+            <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
           </Link>
         </div>
 
@@ -479,8 +479,8 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
               <CardTitle>Expense Breakdown</CardTitle>
               <CardDescription>Total spending by category</CardDescription>
             </CardHeader>
-            <CardContent className="min-h-[300px] flex-1">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <PieChart>
                   <Pie
                     data={expenseBreakdown}
@@ -488,7 +488,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                     cy="50%"
                     labelLine={false}
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={130}
+                    outerRadius="80%"
                     fill="#8884d8"
                     dataKey="value"
                   >
@@ -514,8 +514,8 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                   Travel {pluralize('companion', statistics.favoriteCompanions.length)} by {pluralize('trip', 2)} count
                 </CardDescription>
               </CardHeader>
-              <CardContent className="min-h-[300px] flex-1">
-                <ChartContainer config={chartConfig} className="h-full">
+              <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+                <ChartContainer config={chartConfig} className="h-full w-full">
                   <BarChart
                     data={statistics.favoriteCompanions.map((item, index) => ({
                       name: item.name,
@@ -523,9 +523,10 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                       fill: getColor(index),
                     }))}
                   >
-                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} className="text-xs md:text-sm" />
                     <YAxis
-                      tick={{ fontSize: 12 }}
+                      tick={{ fontSize: 10 }}
+                      className="text-xs md:text-sm"
                       allowDecimals={false}
                       tickFormatter={(value) => Math.round(value).toString()}
                     />
@@ -552,7 +553,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                 </CardTitle>
                 <CardDescription>No companions data available</CardDescription>
               </CardHeader>
-              <CardContent className="flex min-h-[300px] flex-1 items-center justify-center">
+              <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
                 <p className="text-muted-foreground">No companions recorded</p>
               </CardContent>
             </Card>
@@ -564,7 +565,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
           {/* Expenses Over Time */}
           <Card className="flex flex-col">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <CardTitle>Expenses Over Time</CardTitle>
                   <CardDescription>
@@ -574,22 +575,36 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Label htmlFor="expense-toggle" className="cursor-pointer text-sm font-normal">
+                  <Label htmlFor="expense-toggle" className="cursor-pointer text-xs font-normal md:text-sm">
                     Total
                   </Label>
                   <Switch id="expense-toggle" checked={showPerNight} onCheckedChange={setShowPerNight} />
-                  <Label htmlFor="expense-toggle" className="cursor-pointer text-sm font-normal">
+                  <Label htmlFor="expense-toggle" className="cursor-pointer text-xs font-normal md:text-sm">
                     Per Night
                   </Label>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="min-h-[300px] flex-1">
-              <ChartContainer config={chartConfig} className="h-full">
-                <LineChart data={expenseOverTime} key={showPerNight ? 'perNight' : 'total'}>
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+            <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <LineChart
+                  data={expenseOverTime}
+                  key={showPerNight ? 'perNight' : 'total'}
+                  margin={{ top: 5, right: 5, left: -20, bottom: 40 }}
+                >
+                  <XAxis
+                    dataKey="name"
+                    angle={-90}
+                    textAnchor="end"
+                    height={60}
+                    interval={0}
+                    className="text-xs md:text-sm"
+                    tick={{ fontSize: 8 }}
+                  />
                   <YAxis
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 8 }}
+                    width={40}
+                    className="text-xs md:text-sm"
                     allowDecimals={false}
                     tickFormatter={(value) => Math.round(value).toString()}
                     domain={yAxisDomain}
@@ -611,7 +626,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                     dataKey={showPerNight ? 'perNight' : 'total'}
                     stroke={showPerNight ? COLORS[1] : COLORS[0]}
                     strokeWidth={2}
-                    dot={{ r: 4 }}
+                    dot={{ r: 3 }}
                     isAnimationActive={true}
                     animationDuration={500}
                     animationEasing="ease-in-out"
@@ -639,7 +654,7 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
           {/* Expense Breakdown by Trip */}
           <Card className="flex flex-col">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <CardTitle>Expense Breakdown by Trip</CardTitle>
                   <CardDescription>
@@ -647,22 +662,36 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Label htmlFor="breakdown-toggle" className="cursor-pointer text-sm font-normal">
+                  <Label htmlFor="breakdown-toggle" className="cursor-pointer text-xs font-normal md:text-sm">
                     Total
                   </Label>
                   <Switch id="breakdown-toggle" checked={breakdownPerNight} onCheckedChange={setBreakdownPerNight} />
-                  <Label htmlFor="breakdown-toggle" className="cursor-pointer text-sm font-normal">
+                  <Label htmlFor="breakdown-toggle" className="cursor-pointer text-xs font-normal md:text-sm">
                     Per Night
                   </Label>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="min-h-[300px] flex-1">
-              <ChartContainer config={chartConfig} className="h-full">
-                <BarChart data={expenseBreakdownByTrip} key={breakdownPerNight ? 'perNight' : 'total'}>
-                  <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+            <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <BarChart
+                  data={expenseBreakdownByTrip}
+                  key={breakdownPerNight ? 'perNight' : 'total'}
+                  margin={{ top: 5, right: 5, left: -20, bottom: 40 }}
+                >
+                  <XAxis
+                    dataKey="name"
+                    angle={-90}
+                    textAnchor="end"
+                    height={60}
+                    interval={0}
+                    className="text-xs md:text-sm"
+                    tick={{ fontSize: 8 }}
+                  />
                   <YAxis
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 8 }}
+                    width={40}
+                    className="text-xs md:text-sm"
                     allowDecimals={false}
                     tickFormatter={(value) => Math.round(value).toString()}
                   />
@@ -731,8 +760,8 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                 Top {pluralize('city', statistics.mostVisitedCities.length)} by visit count
               </CardDescription>
             </CardHeader>
-            <CardContent className="min-h-[300px] flex-1">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 {(() => {
                   const citiesData = statistics.mostVisitedCities.slice(0, 10).map((item, index) => ({
                     name: item.city,
@@ -740,10 +769,20 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                     fill: getColor(index),
                   }))
                   return (
-                    <BarChart data={citiesData}>
-                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+                    <BarChart data={citiesData} margin={{ top: 5, right: 5, left: -20, bottom: 40 }}>
+                      <XAxis
+                        dataKey="name"
+                        angle={-90}
+                        textAnchor="end"
+                        height={60}
+                        interval={0}
+                        className="text-xs md:text-sm"
+                        tick={{ fontSize: 8 }}
+                      />
                       <YAxis
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: 8 }}
+                        width={40}
+                        className="text-xs md:text-sm"
                         allowDecimals={false}
                         tickFormatter={(value) => Math.round(value).toString()}
                       />
@@ -775,8 +814,8 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                 Top {pluralize('country', statistics.mostVisitedCountries.length)} by visit count
               </CardDescription>
             </CardHeader>
-            <CardContent className="min-h-[300px] flex-1">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="flex-1 px-2 md:min-h-[300px] md:px-6">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 {(() => {
                   const countriesData = statistics.mostVisitedCountries.slice(0, 10).map((item, index) => ({
                     name: item.country,
@@ -784,10 +823,20 @@ export default function SummaryPageClient({ statistics, trips }: SummaryPageClie
                     fill: getColor(index),
                   }))
                   return (
-                    <BarChart data={countriesData}>
-                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
+                    <BarChart data={countriesData} margin={{ top: 5, right: 5, left: -20, bottom: 40 }}>
+                      <XAxis
+                        dataKey="name"
+                        angle={-90}
+                        textAnchor="end"
+                        height={60}
+                        interval={0}
+                        className="text-xs md:text-sm"
+                        tick={{ fontSize: 8 }}
+                      />
                       <YAxis
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: 8 }}
+                        width={40}
+                        className="text-xs md:text-sm"
                         allowDecimals={false}
                         tickFormatter={(value) => Math.round(value).toString()}
                       />
