@@ -133,12 +133,12 @@ http://trips.local/
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Can't resolve `trips.local` | Ensure avahi-daemon is running: `sudo systemctl status avahi-daemon` |
-| Windows can't find `.local` | Install [Bonjour Print Services](https://support.apple.com/kb/DL999) |
-| Connection refused | Check container is running: `docker compose ps` |
-| Auth errors | Clear browser cookies and verify `NEXTAUTH_URL` matches the URL exactly |
+| Issue                       | Solution                                                                |
+| --------------------------- | ----------------------------------------------------------------------- |
+| Can't resolve `trips.local` | Ensure avahi-daemon is running: `sudo systemctl status avahi-daemon`    |
+| Windows can't find `.local` | Install [Bonjour Print Services](https://support.apple.com/kb/DL999)    |
+| Connection refused          | Check container is running: `docker compose ps`                         |
+| Auth errors                 | Clear browser cookies and verify `NEXTAUTH_URL` matches the URL exactly |
 
 ---
 
@@ -367,7 +367,6 @@ To reset the database to its initial seeded state (created during build):
 
 ```bash
 # Method 1: If container is running
-docker-compose exec app rm -f /app/data/tripz.db
 docker-compose restart
 
 # Method 2: Stop, remove database, and restart
@@ -387,7 +386,7 @@ To completely remove all persisted data:
 docker-compose down
 
 # Remove the volume (this deletes ALL data permanently)
-docker volume rm trip-visualization_tripz-data
+docker volume rm tripz_tripz-data
 
 # Start fresh
 docker-compose up
@@ -404,7 +403,7 @@ If you encounter permission errors (e.g., "Permission denied" when creating the 
 docker-compose down
 
 # Remove the volume to recreate it with correct permissions
-docker volume rm trip-visualization_tripz-data
+docker volume rm tripz_tripz-data
 
 # Start again - the volume will be recreated with proper permissions
 docker-compose up
